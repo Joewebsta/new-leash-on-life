@@ -5,6 +5,7 @@ import { loginFormSchema } from "@/schemas/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { PawPrint } from "lucide-react";
 import { useForm } from "react-hook-form";
+import PulseLoader from "react-spinners/PulseLoader";
 import { z } from "zod";
 
 import {
@@ -84,8 +85,18 @@ export function LoginForm({
               </FormItem>
             )}
           />
-          <Button className="w-full" type="submit">
-            Login
+          <Button className="w-full" type="submit" disabled={isPending}>
+            {isPending ? (
+              <PulseLoader
+                color="white"
+                loading={isPending}
+                size={8}
+                aria-label="Loading Spinner"
+                data-testid="loader"
+              />
+            ) : (
+              "Login"
+            )}
           </Button>
           {isError && (
             <div className="text-sm text-red-500 text-center mt-2">
