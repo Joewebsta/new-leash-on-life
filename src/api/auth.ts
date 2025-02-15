@@ -17,3 +17,14 @@ export async function performLogin(values: z.infer<typeof loginFormSchema>) {
     throw new Error(`Login failed: ${response.status} ${response.statusText}`);
   }
 }
+
+export async function performLogout() {
+  const response = await fetch(`${BASE_URL}/auth/logout`, {
+    method: "POST",
+    credentials: "include",
+  });
+
+  if (!response.ok) {
+    throw new Error(`Logout failed: ${response.status} ${response.statusText}`);
+  }
+}
