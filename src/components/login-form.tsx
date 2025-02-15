@@ -23,8 +23,8 @@ export function LoginForm({
 }: React.ComponentPropsWithoutRef<"div">) {
   const { mutateAsync, isPending, isError } = usePerformLogin();
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof loginFormSchema>>({
+    resolver: zodResolver(loginFormSchema),
     defaultValues: {
       name: "",
       email: "",
