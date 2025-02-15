@@ -1,11 +1,11 @@
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
+import { loginFormSchema } from "@/schemas/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { PawPrint } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { cn } from "@/lib/utils";
 
 import {
   Form,
@@ -15,18 +15,13 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { usePerformLogin } from "@/services/authService";
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
-  const formSchema = z.object({
-    name: z.string().min(2, { message: "Must be 2 or more characters long" }),
-    email: z
-      .string()
-      .email({ message: "Invalid email address" })
-      .min(5, { message: "Must be 5 or more characters long" }),
-  });
+  const { mutateAsync, isPending, isError } = usePerformLogin();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -36,10 +31,12 @@ export function LoginForm({
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values);
+  async function onSubmit(values: z.infer<typeof loginFormSchema>) {
+    try {
+      await mutateAsync(values);
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   return (
@@ -59,7 +56,12 @@ export function LoginForm({
               <FormItem>
                 <FormLabel>Name</FormLabel>
                 <FormControl>
-                  <Input placeholder="" {...field} value={field.value || ""} />
+                  <Input
+                    autoFocus
+                    placeholder="Enter your full name"
+                    {...field}
+                    value={field.value || ""}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -72,7 +74,11 @@ export function LoginForm({
               <FormItem>
                 <FormLabel>Email</FormLabel>
                 <FormControl>
-                  <Input placeholder="" {...field} value={field.value || ""} />
+                  <Input
+                    placeholder="Enter your email"
+                    {...field}
+                    value={field.value || ""}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -81,6 +87,11 @@ export function LoginForm({
           <Button className="w-full" type="submit">
             Login
           </Button>
+          {isError && (
+            <div className="text-sm text-red-500 text-center mt-2">
+              We’re having trouble logging you in. Please try again later.
+            </div>
+          )}
         </form>
       </Form>
     </div>
