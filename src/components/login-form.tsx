@@ -21,21 +21,18 @@ export function LoginForm({
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
   const formSchema = z.object({
+    name: z.string().min(2, { message: "Must be 2 or more characters long" }),
     email: z
       .string()
       .email({ message: "Invalid email address" })
       .min(5, { message: "Must be 5 or more characters long" }),
-    password: z
-      .string()
-      .min(2, { message: "Must be 2 or more characters long" })
-      .max(50, { message: "Must be 50 or fewer characters long" }),
   });
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      name: "",
       email: "",
-      password: "",
     },
   });
 
@@ -57,16 +54,12 @@ export function LoginForm({
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <FormField
             control={form.control}
-            name="email"
+            name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Email</FormLabel>
+                <FormLabel>Name</FormLabel>
                 <FormControl>
-                  <Input
-                    placeholder="airbud@gmail.com"
-                    {...field}
-                    value={field.value || ""}
-                  />
+                  <Input placeholder="" {...field} value={field.value || ""} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -74,17 +67,12 @@ export function LoginForm({
           />
           <FormField
             control={form.control}
-            name="password"
+            name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Password</FormLabel>
+                <FormLabel>Email</FormLabel>
                 <FormControl>
-                  <Input
-                    type="password"
-                    placeholder=""
-                    {...field}
-                    value={field.value || ""}
-                  />
+                  <Input placeholder="" {...field} value={field.value || ""} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
