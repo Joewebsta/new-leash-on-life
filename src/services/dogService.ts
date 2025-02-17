@@ -1,10 +1,10 @@
 import { fetchDogs, searchDogs } from "@/api/dogs";
 import { useQuery } from "@tanstack/react-query";
 
-export function useSearchDogs(path?: string) {
+export function useSearchDogs(searchParams?: string) {
   return useQuery({
-    queryKey: ["dogs", "search", { path }],
-    queryFn: () => searchDogs(path),
+    queryKey: ["dogs", "search", { searchParams }],
+    queryFn: () => searchDogs(searchParams),
   });
 }
 

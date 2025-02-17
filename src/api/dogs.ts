@@ -1,8 +1,10 @@
 import { BASE_URL } from "@/api/auth";
 import { Dog, SearchData } from "@/types/types";
 
-export async function searchDogs(path?: string): Promise<SearchData> {
-  const url = path ? `${BASE_URL}${path}` : `${BASE_URL}/dogs/search`;
+export async function searchDogs(searchParams?: string): Promise<SearchData> {
+  const url = searchParams
+    ? `${BASE_URL}/dogs/search?${searchParams}`
+    : `${BASE_URL}/dogs/search`;
   const response = await fetch(url, {
     method: "GET",
     credentials: "include",

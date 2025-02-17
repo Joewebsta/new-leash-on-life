@@ -8,17 +8,18 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import { useState } from "react";
+import { useNavigate, useSearchParams } from "react-router";
 
 export function Search() {
-  const [currentPath, setCurrentPath] = useState<string | undefined>();
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
 
   const { mutateAsync, isPending: isLogoutPending } = usePerformLogout();
   const {
     isPending: isLoadingSearchData,
     isError: isSearchError,
     data: searchData,
-  } = useSearchDogs(currentPath);
+  } = useSearchDogs(searchParams.toString());
 
   const dogIds = searchData?.resultIds;
 
@@ -30,13 +31,13 @@ export function Search() {
 
   const handleNextResults = () => {
     if (searchData?.next) {
-      setCurrentPath(searchData.next);
+      navigate(searchData.next);
     }
   };
 
   const handlePrevResults = () => {
     if (searchData?.prev) {
-      setCurrentPath(searchData.prev);
+      navigate(searchData.prev);
     }
   };
 
@@ -59,7 +60,13 @@ export function Search() {
             />
           </PaginationItem>
           <PaginationItem>
-            <PaginationNext href="#" onClick={handleNextResults} />
+            <PaginationNext
+              href="#"
+              onClick={handleNextResults}
+              className={
+                !searchData?.next ? "pointer-events-none opacity-50" : ""
+              }
+            />
           </PaginationItem>
         </PaginationContent>
       </Pagination>
