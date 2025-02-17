@@ -8,7 +8,7 @@ export function usePerformLogin() {
   return useMutation({
     mutationFn: performLogin,
     onSuccess() {
-      navigate("/search");
+      navigate("/dogs/search");
     },
     onError(error) {
       throw error;
