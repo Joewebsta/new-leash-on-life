@@ -1,8 +1,9 @@
 import { BASE_URL } from "@/api/auth";
 import { Dog, SearchData } from "@/types/types";
 
-export async function searchDogs(): Promise<SearchData> {
-  const response = await fetch(`${BASE_URL}/dogs/search`, {
+export async function searchDogs(path?: string): Promise<SearchData> {
+  const url = path ? `${BASE_URL}${path}` : `${BASE_URL}/dogs/search`;
+  const response = await fetch(url, {
     method: "GET",
     credentials: "include",
   });
@@ -17,8 +18,6 @@ export async function searchDogs(): Promise<SearchData> {
 }
 
 export async function fetchDogs(dogIds: string[]): Promise<Dog[]> {
-  // console.log("Fetch dog, dog ids: ", dogIds);
-
   const response = await fetch(`${BASE_URL}/dogs`, {
     method: "POST",
     headers: {
