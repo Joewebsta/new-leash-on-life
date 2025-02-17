@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { usePerformLogout } from "@/services/authService";
-import { useFetchDogs, useSearchDogs } from "@/services/dogService";
+import { DrawerDialogDemo } from "@/components/ui/drawer-dialogue";
 import {
   Pagination,
   PaginationContent,
@@ -8,6 +7,8 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import { usePerformLogout } from "@/services/authService";
+import { useFetchDogs, useSearchDogs } from "@/services/dogService";
 import { useNavigate, useSearchParams } from "react-router";
 
 export function Search() {
@@ -48,6 +49,7 @@ export function Search() {
   return (
     <div>
       <div>SEARCH PAGE</div>
+      <DrawerDialogDemo />
       <Pagination>
         <PaginationContent>
           <PaginationItem>
