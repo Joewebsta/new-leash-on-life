@@ -1,5 +1,7 @@
 import * as React from "react";
 
+import MultipleSelector, { Option } from "@/components/ui/multiple-selector";
+
 import { cn } from "@/lib/utils";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { Button } from "@/components/ui/button";
@@ -23,6 +25,20 @@ import {
 } from "@/components/ui/drawer";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+
+const OPTIONS: Option[] = [
+  { label: "nextjs", value: "Nextjs" },
+  { label: "Vite", value: "vite", disable: true },
+  { label: "Nuxt", value: "nuxt", disable: true },
+  { label: "Vue", value: "vue, disable: true", disable: true },
+  { label: "Remix", value: "remix" },
+  { label: "Svelte", value: "svelte", disable: true },
+  { label: "Angular", value: "angular", disable: true },
+  { label: "Ember", value: "ember", disable: true },
+  { label: "React", value: "react" },
+  { label: "Gatsby", value: "gatsby", disable: true },
+  { label: "Astro", value: "astro", disable: true },
+];
 
 export function DrawerDialogDemo() {
   const [open, setOpen] = React.useState(false);
@@ -73,6 +89,15 @@ export function DrawerDialogDemo() {
 function FiltersForm({ className }: React.ComponentProps<"form">) {
   return (
     <form className={cn("grid items-start gap-4", className)}>
+      <MultipleSelector
+        defaultOptions={OPTIONS}
+        placeholder="Select frameworks you like..."
+        emptyIndicator={
+          <p className="text-center text-lg leading-10 text-gray-600 dark:text-gray-400">
+            no results found.
+          </p>
+        }
+      />
       <div className="grid gap-2">
         <Label htmlFor="breeds">breeds</Label>
         <Input type="breeds" id="breeds" />
