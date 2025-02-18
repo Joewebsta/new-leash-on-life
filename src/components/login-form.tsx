@@ -22,7 +22,7 @@ export function LoginForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
-  const { mutateAsync, isPending, isError } = usePerformLogin();
+  const { mutateAsync: loginAsync, isPending, isError } = usePerformLogin();
 
   const form = useForm<z.infer<typeof loginFormSchema>>({
     resolver: zodResolver(loginFormSchema),
@@ -34,7 +34,7 @@ export function LoginForm({
 
   async function onSubmit(values: z.infer<typeof loginFormSchema>) {
     try {
-      await mutateAsync(values);
+      await loginAsync(values);
     } catch (error) {
       console.error(error);
     }
