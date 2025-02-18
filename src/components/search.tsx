@@ -13,7 +13,7 @@ import { useNavigate, useSearchParams } from "react-router";
 
 export function Search() {
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const { mutateAsync, isPending: isLogoutPending } = usePerformLogout();
   const {
@@ -32,13 +32,13 @@ export function Search() {
 
   const handleNextResults = () => {
     if (searchData?.next) {
-      navigate(searchData.next);
+      setSearchParams(new URLSearchParams(searchData.next.split("?")[1]));
     }
   };
 
   const handlePrevResults = () => {
     if (searchData?.prev) {
-      navigate(searchData.prev);
+      setSearchParams(new URLSearchParams(searchData.prev.split("?")[1]));
     }
   };
 
