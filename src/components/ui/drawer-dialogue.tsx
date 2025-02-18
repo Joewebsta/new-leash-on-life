@@ -1,10 +1,7 @@
 import * as React from "react";
-
-import MultipleSelector, { Option } from "@/components/ui/multiple-selector";
-
-import { cn } from "@/lib/utils";
-import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { Button } from "@/components/ui/button";
+
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 import {
   Dialog,
   DialogContent,
@@ -23,26 +20,17 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 
-const OPTIONS: Option[] = [
-  { label: "nextjs", value: "Nextjs" },
-  { label: "Vite", value: "vite", disable: true },
-  { label: "Nuxt", value: "nuxt", disable: true },
-  { label: "Vue", value: "vue, disable: true", disable: true },
-  { label: "Remix", value: "remix" },
-  { label: "Svelte", value: "svelte", disable: true },
-  { label: "Angular", value: "angular", disable: true },
-  { label: "Ember", value: "ember", disable: true },
-  { label: "React", value: "react" },
-  { label: "Gatsby", value: "gatsby", disable: true },
-  { label: "Astro", value: "astro", disable: true },
-];
+import { FiltersForm } from "@/components/filters-form";
 
-export function DrawerDialogDemo() {
+export function DrawerDialog({ breeds }: { breeds: string[] }) {
   const [open, setOpen] = React.useState(false);
   const isDesktop = useMediaQuery("(min-width: 768px)");
+
+  const breedOptions = React.useMemo(
+    () => breeds.map((breed) => ({ label: breed, value: breed })),
+    [breeds]
+  );
 
   if (isDesktop) {
     return (
@@ -57,7 +45,7 @@ export function DrawerDialogDemo() {
               Make changes to your profile here. Click save when you're done.
             </DialogDescription>
           </DialogHeader> */}
-          <FiltersForm />
+          <FiltersForm breedOptions={breedOptions} />
         </DialogContent>
       </Dialog>
     );
@@ -75,7 +63,7 @@ export function DrawerDialogDemo() {
             Make changes to your profile here. Click save when you're done.
           </DrawerDescription>
         </DrawerHeader> */}
-        <FiltersForm className="px-4" />
+        <FiltersForm className="px-4" breedOptions={breedOptions} />
         <DrawerFooter className="pt-2">
           <DrawerClose asChild>
             <Button variant="outline">Reset</Button>
@@ -83,26 +71,5 @@ export function DrawerDialogDemo() {
         </DrawerFooter>
       </DrawerContent>
     </Drawer>
-  );
-}
-
-function FiltersForm({ className }: React.ComponentProps<"form">) {
-  return (
-    <form className={cn("grid items-start gap-4", className)}>
-      <MultipleSelector
-        defaultOptions={OPTIONS}
-        placeholder="Select frameworks you like..."
-        emptyIndicator={
-          <p className="text-center text-lg leading-10 text-gray-600 dark:text-gray-400">
-            no results found.
-          </p>
-        }
-      />
-      <div className="grid gap-2">
-        <Label htmlFor="breeds">breeds</Label>
-        <Input type="breeds" id="breeds" />
-      </div>
-      <Button type="submit">Apply</Button>
-    </form>
   );
 }

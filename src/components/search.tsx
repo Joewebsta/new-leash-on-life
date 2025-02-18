@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { DrawerDialogDemo } from "@/components/ui/drawer-dialogue";
+import { DrawerDialog } from "@/components/ui/drawer-dialogue";
 import {
   Pagination,
   PaginationContent,
@@ -8,7 +8,11 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { usePerformLogout } from "@/services/authService";
-import { useFetchDogs, useSearchDogs } from "@/services/dogService";
+import {
+  useFetchBreeds,
+  useFetchDogs,
+  useSearchDogs,
+} from "@/services/dogService";
 import { useNavigate, useSearchParams } from "react-router";
 
 export function Search() {
@@ -30,6 +34,12 @@ export function Search() {
     data: dogsData,
   } = useFetchDogs(dogIds ?? []);
 
+  const {
+    isPending: isLoadingBreeds,
+    isError: isDogBreedsError,
+    data: dogBreeds,
+  } = useFetchBreeds();
+
   const handleNextResults = () => {
     if (searchData?.next) {
       setSearchParams(new URLSearchParams(searchData.next.split("?")[1]));
@@ -49,7 +59,7 @@ export function Search() {
   return (
     <div>
       <div>SEARCH PAGE</div>
-      <DrawerDialogDemo />
+      <DrawerDialog breeds={dogBreeds || []} />
       <Pagination>
         <PaginationContent>
           <PaginationItem>
