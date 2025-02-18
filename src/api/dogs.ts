@@ -37,3 +37,18 @@ export async function fetchDogs(dogIds: string[]): Promise<Dog[]> {
 
   return response.json();
 }
+
+export async function fetchBreeds(): Promise<string[]> {
+  const response = await fetch(`${BASE_URL}/dogs/breeds`, {
+    method: "GET",
+    credentials: "include",
+  });
+
+  if (!response.ok) {
+    throw new Error(
+      `Failed to fetch dogs: ${response.status} ${response.statusText}`
+    );
+  }
+
+  return response.json();
+}
