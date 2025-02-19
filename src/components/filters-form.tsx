@@ -23,12 +23,12 @@ import { useSearchParams } from "react-router";
 const optionSchema = z.object({
   label: z.string(),
   value: z.string(),
-  disable: z.boolean().optional(),
 });
 
 const FormSchema = z.object({
   breeds: z.array(optionSchema),
   ageRange: z.array(z.number()).length(2),
+  zipCodes: z.array(optionSchema),
 });
 
 interface FiltersFormProps extends React.ComponentProps<"form"> {
@@ -36,15 +36,27 @@ interface FiltersFormProps extends React.ComponentProps<"form"> {
 }
 
 export function FiltersForm({ className, breedOptions }: FiltersFormProps) {
-  const [, setSearchParams] = useSearchParams();
-  // const [totalDogs, setTotalDogs] = React.useState(0);
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const defaultValues = React.useMemo(
+    () => ({
+      breeds: searchParams
+        .getAll("breeds")
+        .map((breed) => ({ value: breed, label: breed })),
+      ageRange: [
+        Number(searchParams.get("ageMin")) || 0,
+        Number(searchParams.get("ageMax")) || 30,
+      ],
+      zipCodes: searchParams
+        .getAll("zipCodes")
+        .map((zipCode) => ({ value: zipCode, label: zipCode })),
+    }),
+    [searchParams]
+  );
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
-    defaultValues: {
-      breeds: [],
-      ageRange: [0, 30],
-    },
+    defaultValues,
   });
 
   // const breeds = form.watch("breeds");
@@ -73,6 +85,7 @@ export function FiltersForm({ className, breedOptions }: FiltersFormProps) {
 
     const breedParams = data.breeds.map((breed) => breed.value);
     const [ageMinParam, ageMaxParam] = data.ageRange;
+    const zipCodeParams = data.zipCodes.map((zipCode) => zipCode.value);
     // console.log("BREED PARAMS: ", breedParams);
     // console.log("AGE PARAMS: ", ageMinParam, ageMaxParam);
 
@@ -80,10 +93,12 @@ export function FiltersForm({ className, breedOptions }: FiltersFormProps) {
       prev.delete("breeds");
       prev.delete("ageMin");
       prev.delete("ageMax");
+      prev.delete("zipCodes");
 
       breedParams.forEach((breed) => prev.append("breeds", breed));
+      zipCodeParams.forEach((zipCode) => prev.append("zipCodes", zipCode));
       prev.append("ageMin", ageMinParam.toString());
-      prev.append("ageMin", ageMaxParam.toString());
+      prev.append("ageMax", ageMaxParam.toString());
       return prev;
     });
   }
@@ -106,11 +121,6 @@ export function FiltersForm({ className, breedOptions }: FiltersFormProps) {
                     {...field}
                     defaultOptions={breedOptions}
                     placeholder="Select one or multiple breeds"
-                    emptyIndicator={
-                      <p className="text-center text-lg leading-10 text-gray-600 dark:text-gray-400">
-                        no results found.
-                      </p>
-                    }
                   />
                 </FormControl>
                 <FormMessage />
@@ -144,6 +154,23 @@ export function FiltersForm({ className, breedOptions }: FiltersFormProps) {
               );
             }}
           />
+          <FormField
+            control={form.control}
+            name="zipCodes"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Zipcodes</FormLabel>
+                <FormControl>
+                  <MultipleSelector
+                    {...field}
+                    defaultOptions={[]}
+                    creatable
+                    placeholder="Select one or multiple zip codes"
+                  />
+                </FormControl>
+              </FormItem>
+            )}
+          ></FormField>
           {/* <Button className="w-full" type="submit" disabled={isPending}> */}
           <Button className="w-full" type="submit">
             {/* {isPending ? (
