@@ -84,17 +84,23 @@ export function Search() {
       </Pagination>
       {dogsData?.map((dog) => {
         return (
-          <img
-            key={dog.id}
-            src={dog.img}
-            alt={dog.name}
-            style={{
-              aspectRatio: "1 / 1",
-              objectFit: "cover",
-              width: "200px",
-              height: "200px",
-            }}
-          />
+          <div>
+            <img
+              key={dog.id}
+              src={dog.img}
+              alt={dog.name}
+              style={{
+                aspectRatio: "1 / 1",
+                objectFit: "cover",
+                width: "200px",
+                height: "200px",
+              }}
+            />
+            <p>{dog.name}</p>
+            <p>{dog.breed}</p>
+            <p>{dog.age}</p>
+            <p>{dog.zip_code}</p>
+          </div>
         );
       })}
       <Button
