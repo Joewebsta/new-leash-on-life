@@ -2,6 +2,8 @@ import MultipleSelector, { Option } from "@/components/ui/multiple-selector";
 import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+
 import { Button } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -29,6 +31,16 @@ const FormSchema = z.object({
   breeds: z.array(optionSchema),
   ageRange: z.array(z.number()).length(2),
   zipCodes: z.array(optionSchema),
+  sort: z
+    .enum([
+      "name:asc",
+      "name:desc",
+      "breed:asc",
+      "breed:desc",
+      "age:asc",
+      "age:desc",
+    ])
+    .nullable(),
 });
 
 interface FiltersFormProps extends React.ComponentProps<"form"> {
@@ -40,6 +52,7 @@ export function FiltersForm({ className, breedOptions }: FiltersFormProps) {
 
   const defaultValues = React.useMemo(
     () => ({
+      sort: searchParams.get("sort") as z.infer<typeof FormSchema>["sort"],
       breeds: searchParams
         .getAll("breeds")
         .map((breed) => ({ value: breed, label: breed })),
@@ -81,26 +94,18 @@ export function FiltersForm({ className, breedOptions }: FiltersFormProps) {
   // }, [breeds, searchParams]);
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
-    // console.log("DATA: ", data);
+    const params = new URLSearchParams();
+    console.log("SORT VALUE: ", data.sort);
 
-    const breedParams = data.breeds.map((breed) => breed.value);
-    const [ageMinParam, ageMaxParam] = data.ageRange;
-    const zipCodeParams = data.zipCodes.map((zipCode) => zipCode.value);
-    // console.log("BREED PARAMS: ", breedParams);
-    // console.log("AGE PARAMS: ", ageMinParam, ageMaxParam);
+    if (data.sort) params.append("sort", data.sort);
+    data.breeds.forEach((breed) => params.append("breeds", breed.value));
+    data.zipCodes.forEach((zipCode) =>
+      params.append("zipCodes", zipCode.value)
+    );
+    params.append("ageMin", data.ageRange[0].toString());
+    params.append("ageMax", data.ageRange[1].toString());
 
-    setSearchParams((prev) => {
-      prev.delete("breeds");
-      prev.delete("ageMin");
-      prev.delete("ageMax");
-      prev.delete("zipCodes");
-
-      breedParams.forEach((breed) => prev.append("breeds", breed));
-      zipCodeParams.forEach((zipCode) => prev.append("zipCodes", zipCode));
-      prev.append("ageMin", ageMinParam.toString());
-      prev.append("ageMax", ageMaxParam.toString());
-      return prev;
-    });
+    setSearchParams(params);
   }
 
   return (
@@ -110,6 +115,90 @@ export function FiltersForm({ className, breedOptions }: FiltersFormProps) {
           onSubmit={form.handleSubmit(onSubmit)}
           className="w-2/3 space-y-6"
         >
+          <FormField
+            control={form.control}
+            name="sort"
+            render={({ field }) => (
+              <FormItem className="space-y-3">
+                <FormLabel>Sort By</FormLabel>
+                <FormControl>
+                  <RadioGroup
+                    onValueChange={field.onChange}
+                    defaultValue={field.value || undefined}
+                    className="flex flex-col space-y-1"
+                  >
+                    <FormItem className="flex items-center space-x-3 space-y-0">
+                      <FormControl>
+                        <RadioGroupItem value="breed:asc" />
+                      </FormControl>
+                      <FormLabel className="font-normal">
+                        Breed: A - Z
+                      </FormLabel>
+                    </FormItem>
+                    <FormItem className="flex items-center space-x-3 space-y-0">
+                      <FormControl>
+                        <RadioGroupItem value="breed:desc" />
+                      </FormControl>
+                      <FormLabel className="font-normal">
+                        Breed: Z - A
+                      </FormLabel>
+                    </FormItem>
+                    <FormItem className="flex items-center space-x-3 space-y-0">
+                      <FormControl>
+                        <RadioGroupItem value="name:asc" />
+                      </FormControl>
+                      <FormLabel className="font-normal">Name: A - Z</FormLabel>
+                    </FormItem>
+                    <FormItem className="flex items-center space-x-3 space-y-0">
+                      <FormControl>
+                        <RadioGroupItem value="name:desc" />
+                      </FormControl>
+                      <FormLabel className="font-normal">Name: Z - A</FormLabel>
+                    </FormItem>
+                    <FormItem className="flex items-center space-x-3 space-y-0">
+                      <FormControl>
+                        <RadioGroupItem value="age:asc" />
+                      </FormControl>
+                      <FormLabel className="font-normal">
+                        Age: Low - High
+                      </FormLabel>
+                    </FormItem>
+                    <FormItem className="flex items-center space-x-3 space-y-0">
+                      <FormControl>
+                        <RadioGroupItem value="age:desc" />
+                      </FormControl>
+                      <FormLabel className="font-normal">
+                        Age: High - Low
+                      </FormLabel>
+                    </FormItem>
+                  </RadioGroup>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="ageRange"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Age Range</FormLabel>
+                <FormControl>
+                  <div className="w-full space-y-5 px-10">
+                    <DualRangeSlider
+                      label={(value) => <span>{value} years</span>}
+                      value={field.value}
+                      onValueChange={field.onChange}
+                      min={0}
+                      max={30}
+                      step={1}
+                    />
+                  </div>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
           <FormField
             control={form.control}
             name="breeds"
@@ -127,33 +216,6 @@ export function FiltersForm({ className, breedOptions }: FiltersFormProps) {
               </FormItem>
             )}
           />
-
-          <FormField
-            control={form.control}
-            name="ageRange"
-            render={({ field }) => {
-              console.log("FIELD: ", field);
-
-              return (
-                <FormItem>
-                  <FormLabel>Age Range</FormLabel>
-                  <FormControl>
-                    <div className="w-full space-y-5 px-10">
-                      <DualRangeSlider
-                        label={(value) => <span>{value} years</span>}
-                        value={field.value}
-                        onValueChange={field.onChange}
-                        min={0}
-                        max={30}
-                        step={1}
-                      />
-                    </div>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              );
-            }}
-          />
           <FormField
             control={form.control}
             name="zipCodes"
@@ -170,7 +232,8 @@ export function FiltersForm({ className, breedOptions }: FiltersFormProps) {
                 </FormControl>
               </FormItem>
             )}
-          ></FormField>
+          />
+
           {/* <Button className="w-full" type="submit" disabled={isPending}> */}
           <Button className="w-full" type="submit">
             {/* {isPending ? (
