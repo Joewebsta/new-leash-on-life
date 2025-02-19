@@ -15,9 +15,10 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { DualRangeSlider } from "@/components/ui/dual-range-slider";
 
-import { useNavigate, useSearchParams } from "react-router";
-import { searchDogs } from "@/api/dogs";
+import { useSearchParams } from "react-router";
+// import { searchDogs } from "@/api/dogs";
 
 const optionSchema = z.object({
   label: z.string(),
@@ -27,6 +28,7 @@ const optionSchema = z.object({
 
 const FormSchema = z.object({
   breeds: z.array(optionSchema),
+  ageRange: z.array(z.number()).length(2),
 });
 
 interface FiltersFormProps extends React.ComponentProps<"form"> {
@@ -39,6 +41,10 @@ export function FiltersForm({ className, breedOptions }: FiltersFormProps) {
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
+    defaultValues: {
+      breeds: [],
+      ageRange: [0, 30],
+    },
   });
 
   // const breeds = form.watch("breeds");
@@ -63,18 +69,21 @@ export function FiltersForm({ className, breedOptions }: FiltersFormProps) {
   // }, [breeds, searchParams]);
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
-    console.log("DATA: ", data.breeds);
+    // console.log("DATA: ", data);
 
-    // Convert the selected breeds into a URL-friendly format
     const breedParams = data.breeds.map((breed) => breed.value);
-    console.log("BREED PARAMS: ", breedParams);
+    const [ageMinParam, ageMaxParam] = data.ageRange;
+    // console.log("BREED PARAMS: ", breedParams);
+    // console.log("AGE PARAMS: ", ageMinParam, ageMaxParam);
 
-    // Update the URL parameters without navigation
     setSearchParams((prev) => {
-      // Clear any existing breed parameters
       prev.delete("breeds");
-      // Add each breed as a separate 'breeds' parameter
+      prev.delete("ageMin");
+      prev.delete("ageMax");
+
       breedParams.forEach((breed) => prev.append("breeds", breed));
+      prev.append("ageMin", ageMinParam.toString());
+      prev.append("ageMin", ageMaxParam.toString());
       return prev;
     });
   }
@@ -91,7 +100,7 @@ export function FiltersForm({ className, breedOptions }: FiltersFormProps) {
             name="breeds"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Frameworks</FormLabel>
+                <FormLabel>Breeds</FormLabel>
                 <FormControl>
                   <MultipleSelector
                     {...field}
@@ -107,6 +116,33 @@ export function FiltersForm({ className, breedOptions }: FiltersFormProps) {
                 <FormMessage />
               </FormItem>
             )}
+          />
+
+          <FormField
+            control={form.control}
+            name="ageRange"
+            render={({ field }) => {
+              console.log("FIELD: ", field);
+
+              return (
+                <FormItem>
+                  <FormLabel>Age Range</FormLabel>
+                  <FormControl>
+                    <div className="w-full space-y-5 px-10">
+                      <DualRangeSlider
+                        label={(value) => <span>{value} years</span>}
+                        value={field.value}
+                        onValueChange={field.onChange}
+                        min={0}
+                        max={30}
+                        step={1}
+                      />
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              );
+            }}
           />
           {/* <Button className="w-full" type="submit" disabled={isPending}> */}
           <Button className="w-full" type="submit">
