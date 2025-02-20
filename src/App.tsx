@@ -6,18 +6,22 @@ import { useState } from "react";
 import { Route, Routes } from "react-router";
 
 function App() {
-  const [selectedDogIds, setSelectedDogIds] = useState<Set<string>>(new Set());
+  const [selectedDogs, setSelectedDogs] = useState<Set<Dog>>(new Set());
 
-  const handleUpdateSelectedDogIds = (dog: Dog) => {
-    if (selectedDogIds.size >= 10 && !selectedDogIds.has(dog.id)) return;
+  const handleUpdateSelectedDogs = (dog: Dog) => {
+    if (selectedDogs.size >= 10 && !selectedDogs.has(dog)) return;
 
-    if (!selectedDogIds.has(dog.id)) {
-      setSelectedDogIds(new Set([...selectedDogIds, dog.id]));
+    if (!selectedDogs.has(dog)) {
+      setSelectedDogs(new Set([...selectedDogs, dog]));
     } else {
-      const newSet = new Set(selectedDogIds);
-      newSet.delete(dog.id);
-      setSelectedDogIds(newSet);
+      const newSet = new Set(selectedDogs);
+      newSet.delete(dog);
+      setSelectedDogs(newSet);
     }
+  };
+
+  const handleResetSelectedDogs = () => {
+    setSelectedDogs(new Set());
   };
 
   return (
@@ -29,14 +33,19 @@ function App() {
           path="/dogs/search"
           element={
             <Search
-              selectedDogIds={selectedDogIds}
-              onUpdateSelectedDogIds={handleUpdateSelectedDogIds}
+              selectedDogs={selectedDogs}
+              onUpdateSelectedDogs={handleUpdateSelectedDogs}
             />
           }
         />
         <Route
           path="/dogs/match"
-          element={<MatchPage selectedDogIds={selectedDogIds} />}
+          element={
+            <MatchPage
+              selectedDogs={selectedDogs}
+              onResetSelectedDogs={handleResetSelectedDogs}
+            />
+          }
         />
       </Routes>
     </div>
