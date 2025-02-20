@@ -27,7 +27,9 @@ export function Search({
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const { mutateAsync, isPending: isLogoutPending } = usePerformLogout();
+  const { mutateAsync: logoutAsync, isPending: isLogoutPending } =
+    usePerformLogout();
+
   const {
     isPending: isLoadingSearchData,
     isError: isSearchError,
@@ -120,7 +122,7 @@ export function Search({
       <Button
         onClick={async () => {
           try {
-            await mutateAsync();
+            await logoutAsync();
           } catch (error) {}
         }}
       >
