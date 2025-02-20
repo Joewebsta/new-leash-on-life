@@ -13,3 +13,7 @@ export interface SearchData {
   next?: string;
   prev?: string;
 }
+
+export interface Match {
+  match: string;
+}
