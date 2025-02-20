@@ -14,8 +14,16 @@ import {
   useSearchDogs,
 } from "@/services/dogService";
 import { useNavigate, useSearchParams } from "react-router";
+import { Heart } from "lucide-react";
+import { Dog } from "@/types/types";
 
-export function Search() {
+export function Search({
+  selectedDogIds,
+  onUpdateSelectedDogIds,
+}: {
+  selectedDogIds: Set<string>;
+  onUpdateSelectedDogIds: (dog: Dog) => void;
+}) {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -59,6 +67,7 @@ export function Search() {
   return (
     <div>
       <div>SEARCH PAGE</div>
+      <Button onClick={() => navigate("/dogs/match")}>Matches</Button>
       <DrawerDialog breeds={dogBreeds || []} />
       <Pagination>
         <PaginationContent>
@@ -83,8 +92,13 @@ export function Search() {
         </PaginationContent>
       </Pagination>
       {dogsData?.map((dog) => {
+        const isSelected = selectedDogIds.has(dog.id);
+
         return (
-          <div>
+          <div key={dog.id}>
+            <button onMouseDown={() => onUpdateSelectedDogIds(dog)}>
+              <Heart fill={isSelected ? "red" : "white"} />
+            </button>
             <img
               key={dog.id}
               src={dog.img}
