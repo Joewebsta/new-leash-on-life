@@ -1,4 +1,4 @@
-import { fetchBreeds, fetchDogs, searchDogs } from "@/api/dogs";
+import { fetchBreeds, fetchDogs, identifyMatch, searchDogs } from "@/api/dogs";
 import { useQuery } from "@tanstack/react-query";
 
 export function useSearchDogs(searchParams?: string) {
@@ -20,5 +20,12 @@ export function useFetchBreeds() {
   return useQuery({
     queryKey: ["dogs", "breeds"],
     queryFn: fetchBreeds,
+  });
+}
+
+export function useIdentifyMatch(dogIds: string[]) {
+  return useQuery({
+    queryKey: ["dogs", "match", { ids: dogIds }],
+    queryFn: () => identifyMatch(dogIds),
   });
 }
