@@ -22,6 +22,7 @@ import {
 } from "@/components/ui/drawer";
 
 import { FiltersForm } from "@/components/filters-form";
+import { Settings2 } from "lucide-react";
 
 export function DrawerDialog({ breeds }: { breeds: string[] }) {
   const [open, setOpen] = React.useState(false);
@@ -36,7 +37,9 @@ export function DrawerDialog({ breeds }: { breeds: string[] }) {
     return (
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
-          <Button variant="outline">Filters</Button>
+          <Button variant="outline">
+            <Settings2 /> Filters
+          </Button>
         </DialogTrigger>
         <DialogContent className="sm:max-w-[425px]">
           {/* <DialogHeader>
@@ -54,7 +57,9 @@ export function DrawerDialog({ breeds }: { breeds: string[] }) {
   return (
     <Drawer open={open} onOpenChange={setOpen}>
       <DrawerTrigger asChild>
-        <Button variant="outline">Filters</Button>
+        <Button variant="outline">
+          <Settings2 /> Filters
+        </Button>
       </DrawerTrigger>
       <DrawerContent>
         {/* <DrawerHeader className="text-left">
