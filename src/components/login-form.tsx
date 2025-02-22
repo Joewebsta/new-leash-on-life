@@ -41,70 +41,72 @@ export function LoginForm({
   }
 
   return (
-    <div className={cn("flex flex-col gap-6", className)} {...props}>
-      <div className="flex flex-col items-center gap-2">
-        <div className="flex h-8 w-8 items-center justify-center rounded-md">
-          <PawPrint className="size-6" />
+    <div className="flex min-h-svh flex-col items-center justify-center gap-6 p-6 md:p-10">
+      <div className={cn("flex flex-col gap-6", className)} {...props}>
+        <div className="flex flex-col items-center gap-2">
+          <div className="flex h-8 w-8 items-center justify-center rounded-md">
+            <PawPrint className="size-6" />
+          </div>
+          <h1 className="text-xl font-bold">Welcome to a New Leash on Life</h1>
         </div>
-        <h1 className="text-xl font-bold">Welcome to a New Leash on Life</h1>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Name</FormLabel>
+                  <FormControl>
+                    <Input
+                      autoFocus
+                      placeholder="Enter your full name"
+                      {...field}
+                      value={field.value || ""}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Enter your email"
+                      {...field}
+                      value={field.value || ""}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <Button className="w-full" type="submit" disabled={isPending}>
+              {isPending ? (
+                <PulseLoader
+                  color="white"
+                  loading={isPending}
+                  size={8}
+                  aria-label="Loading Spinner"
+                  data-testid="loader"
+                />
+              ) : (
+                "Login"
+              )}
+            </Button>
+            {isError && (
+              <div className="text-sm text-red-500 text-center mt-2">
+                We’re having trouble logging you in. Please try again later.
+              </div>
+            )}
+          </form>
+        </Form>
       </div>
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          <FormField
-            control={form.control}
-            name="name"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Name</FormLabel>
-                <FormControl>
-                  <Input
-                    autoFocus
-                    placeholder="Enter your full name"
-                    {...field}
-                    value={field.value || ""}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="email"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Email</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="Enter your email"
-                    {...field}
-                    value={field.value || ""}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <Button className="w-full" type="submit" disabled={isPending}>
-            {isPending ? (
-              <PulseLoader
-                color="white"
-                loading={isPending}
-                size={8}
-                aria-label="Loading Spinner"
-                data-testid="loader"
-              />
-            ) : (
-              "Login"
-            )}
-          </Button>
-          {isError && (
-            <div className="text-sm text-red-500 text-center mt-2">
-              We’re having trouble logging you in. Please try again later.
-            </div>
-          )}
-        </form>
-      </Form>
     </div>
   );
 }
