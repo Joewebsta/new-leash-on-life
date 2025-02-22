@@ -25,30 +25,28 @@ function App() {
   };
 
   return (
-    <div className="flex min-h-svh flex-col items-center justify-center gap-6 p-6 md:p-10">
-      <Routes>
-        <Route path="/" element={<LoginForm />} />
-        <Route path="/login" element={<LoginForm />} />
-        <Route
-          path="/dogs/search"
-          element={
-            <Search
-              selectedDogs={selectedDogs}
-              onUpdateSelectedDogs={handleUpdateSelectedDogs}
-            />
-          }
-        />
-        <Route
-          path="/dogs/match"
-          element={
-            <MatchPage
-              selectedDogs={selectedDogs}
-              onResetSelectedDogs={handleResetSelectedDogs}
-            />
-          }
-        />
-      </Routes>
-    </div>
+    <Routes>
+      <Route index element={<LoginForm />} />
+      <Route path="/login" element={<LoginForm />} />
+      <Route
+        path="/dogs/search"
+        element={
+          <Search
+            selectedDogs={selectedDogs}
+            onUpdateSelectedDogs={handleUpdateSelectedDogs}
+          />
+        }
+      />
+      <Route
+        path="/dogs/match"
+        element={
+          <MatchPage
+            selectedDogs={selectedDogs}
+            onResetSelectedDogs={handleResetSelectedDogs}
+          />
+        }
+      />
+    </Routes>
   );
 }
 
