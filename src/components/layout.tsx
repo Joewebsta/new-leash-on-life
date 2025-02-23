@@ -1,12 +1,16 @@
 import { Button } from "@/components/ui/button";
 import { usePerformLogout } from "@/services/authService";
-import { PawPrint } from "lucide-react";
+import { PawPrint, X } from "lucide-react";
 import { Outlet } from "react-router";
 import PulseLoader from "react-spinners/PulseLoader";
 
 export default function Layout() {
-  const { mutateAsync: logoutAsync, isPending: isLogoutPending } =
-    usePerformLogout();
+  const {
+    mutateAsync: logoutAsync,
+    isPending: isLogoutPending,
+    isError: isLogoutError,
+    reset: resetLogoutError,
+  } = usePerformLogout();
 
   return (
     <div className="relative min-h-screen">
@@ -16,16 +20,7 @@ export default function Layout() {
             <PawPrint size={20} />
             <h1 className="font-bold">A New Leash on Life</h1>
           </div>
-          <Button
-            variant="ghost"
-            onClick={async () => {
-              try {
-                await logoutAsync();
-              } catch (error) {
-                // JOE TODO: HOW TO HANDLE ERROR
-              }
-            }}
-          >
+          <Button variant="ghost" onClick={async () => await logoutAsync()}>
             {isLogoutPending ? (
               <PulseLoader
                 color="black"
@@ -40,6 +35,23 @@ export default function Layout() {
           </Button>
         </header>
       </div>
+      {isLogoutError && (
+        <div className="bg-red-50 py-4">
+          <div className="px-6 md:px-10 xl:px-20 flex items-center justify-between">
+            <div className="flex-1 text-sm text-red-700">
+              Failed to logout. Please try again.
+            </div>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={resetLogoutError}
+              className="text-red-700 hover:bg-red-100"
+            >
+              <X size={16} />
+            </Button>
+          </div>
+        </div>
+      )}
       <Outlet />
     </div>
   );
