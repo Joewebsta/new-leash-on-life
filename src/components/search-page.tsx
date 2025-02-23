@@ -16,7 +16,7 @@ import { Dog } from "@/types/types";
 import { Cake, Heart, MapPin, Search as SearchIcon } from "lucide-react";
 import { useNavigate, useSearchParams } from "react-router";
 
-export function Search({
+export function SearchPage({
   selectedDogs,
   onUpdateSelectedDogs,
 }: {
@@ -96,14 +96,7 @@ export function Search({
                   key={dog.id}
                   src={dog.img}
                   alt={dog.name}
-                  className="rounded-xl mb-3"
-                  // ADD THE STYLE ATTRIBUTE OBJECT TO CLASSNAME
-                  style={{
-                    aspectRatio: "1 / 1",
-                    objectFit: "cover",
-                    width: "100%",
-                    // height: "200px",
-                  }}
+                  className="rounded-xl mb-3 aspect-square object-cover w-full"
                 />
                 <div className="flex flex-col gap-[2px]">
                   <p className="text-2xl font-bold">{dog.name}</p>

@@ -1,7 +1,7 @@
 import Layout from "@/components/layout";
 import { LoginForm } from "@/components/login-form";
 import MatchPage from "@/components/match-page";
-import { Search } from "@/components/search";
+import { SearchPage } from "@/components/search-page";
 import { Dog } from "@/types/types";
 import { useState } from "react";
 import { Route, Routes } from "react-router";
@@ -34,7 +34,7 @@ function App() {
         <Route
           path="/dogs/search"
           element={
-            <Search
+            <SearchPage
               selectedDogs={selectedDogs}
               onUpdateSelectedDogs={handleUpdateSelectedDogs}
             />
