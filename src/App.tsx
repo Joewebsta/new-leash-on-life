@@ -1,3 +1,4 @@
+import Layout from "@/components/layout";
 import { LoginForm } from "@/components/login-form";
 import MatchPage from "@/components/match-page";
 import { Search } from "@/components/search";
@@ -20,32 +21,32 @@ function App() {
     }
   };
 
-  const handleResetSelectedDogs = () => {
-    setSelectedDogs(new Set());
-  };
+  const handleResetSelectedDogs = () => setSelectedDogs(new Set());
 
   return (
     <Routes>
       <Route index element={<LoginForm />} />
       <Route path="/login" element={<LoginForm />} />
-      <Route
-        path="/dogs/search"
-        element={
-          <Search
-            selectedDogs={selectedDogs}
-            onUpdateSelectedDogs={handleUpdateSelectedDogs}
-          />
-        }
-      />
-      <Route
-        path="/dogs/match"
-        element={
-          <MatchPage
-            selectedDogs={selectedDogs}
-            onResetSelectedDogs={handleResetSelectedDogs}
-          />
-        }
-      />
+      <Route element={<Layout />}>
+        <Route
+          path="/dogs/search"
+          element={
+            <Search
+              selectedDogs={selectedDogs}
+              onUpdateSelectedDogs={handleUpdateSelectedDogs}
+            />
+          }
+        />
+        <Route
+          path="/dogs/match"
+          element={
+            <MatchPage
+              selectedDogs={selectedDogs}
+              onResetSelectedDogs={handleResetSelectedDogs}
+            />
+          }
+        />
+      </Route>
     </Routes>
   );
 }
