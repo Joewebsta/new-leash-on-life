@@ -42,12 +42,9 @@ export function DrawerDialog({ breeds }: { breeds: string[] }) {
           </Button>
         </DialogTrigger>
         <DialogContent className="sm:max-w-[425px]">
-          {/* <DialogHeader>
-            <DialogTitle>Edit profile</DialogTitle>
-            <DialogDescription>
-              Make changes to your profile here. Click save when you're done.
-            </DialogDescription>
-          </DialogHeader> */}
+          <DialogHeader>
+            <DialogTitle>Filters</DialogTitle>
+          </DialogHeader>
           <FiltersForm breedOptions={breedOptions} />
         </DialogContent>
       </Dialog>
@@ -61,19 +58,17 @@ export function DrawerDialog({ breeds }: { breeds: string[] }) {
           <Settings2 /> Filters
         </Button>
       </DrawerTrigger>
-      <DrawerContent>
-        {/* <DrawerHeader className="text-left">
-          <DrawerTitle>Edit profile</DrawerTitle>
-          <DrawerDescription>
-            Make changes to your profile here. Click save when you're done.
-          </DrawerDescription>
-        </DrawerHeader> */}
-        <FiltersForm className="px-4" breedOptions={breedOptions} />
-        <DrawerFooter className="pt-2">
-          <DrawerClose asChild>
-            <Button variant="outline">Reset</Button>
-          </DrawerClose>
-        </DrawerFooter>
+      <DrawerContent className="max-h-[100%]">
+        <div className="overflow-scroll">
+          <DrawerHeader className="text-left">
+            <DrawerTitle>Filters</DrawerTitle>
+          </DrawerHeader>
+          <FiltersForm breedOptions={breedOptions} />
+        </div>
+        {/* <DrawerClose asChild>
+          <Button variant="outline">Reset</Button>
+        </DrawerClose>
+        <DrawerFooter className="pt-2"></DrawerFooter> */}
       </DrawerContent>
     </Drawer>
   );

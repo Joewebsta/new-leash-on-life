@@ -95,7 +95,6 @@ export function FiltersForm({ className, breedOptions }: FiltersFormProps) {
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
     const params = new URLSearchParams();
-    console.log("SORT VALUE: ", data.sort);
 
     if (data.sort) params.append("sort", data.sort);
     data.breeds.forEach((breed) => params.append("breeds", breed.value));
@@ -108,13 +107,20 @@ export function FiltersForm({ className, breedOptions }: FiltersFormProps) {
     setSearchParams(params);
   }
 
+  const handleReset = () => {
+    form.reset({
+      sort: "breed:asc",
+      breeds: [],
+      ageRange: [0, 30],
+      zipCodes: [],
+    });
+    setSearchParams(new URLSearchParams("?sort=breed:asc"));
+  };
+
   return (
-    <div>
+    <div className={cn("pb-[98px] px-4", className)}>
       <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="w-2/3 space-y-6"
-        >
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           <FormField
             control={form.control}
             name="sort"
@@ -124,8 +130,9 @@ export function FiltersForm({ className, breedOptions }: FiltersFormProps) {
                 <FormControl>
                   <RadioGroup
                     onValueChange={field.onChange}
-                    defaultValue={field.value || undefined}
+                    value={field.value || undefined}
                     className="flex flex-col space-y-1"
+                    tabIndex={0}
                   >
                     <FormItem className="flex items-center space-x-3 space-y-0">
                       <FormControl>
@@ -179,28 +186,6 @@ export function FiltersForm({ className, breedOptions }: FiltersFormProps) {
           />
           <FormField
             control={form.control}
-            name="ageRange"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Age Range</FormLabel>
-                <FormControl>
-                  <div className="w-full space-y-5 px-10">
-                    <DualRangeSlider
-                      label={(value) => <span>{value} years</span>}
-                      value={field.value}
-                      onValueChange={field.onChange}
-                      min={0}
-                      max={30}
-                      step={1}
-                    />
-                  </div>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
             name="breeds"
             render={({ field }) => (
               <FormItem>
@@ -211,6 +196,29 @@ export function FiltersForm({ className, breedOptions }: FiltersFormProps) {
                     defaultOptions={breedOptions}
                     placeholder="Select one or multiple breeds"
                   />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="ageRange"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Age Range</FormLabel>
+                <FormControl>
+                  <div className="h-6">
+                    <DualRangeSlider
+                      labelPosition="bottom"
+                      label={(value) => <span>{value}</span>}
+                      value={field.value}
+                      onValueChange={field.onChange}
+                      min={0}
+                      max={30}
+                      step={1}
+                    />
+                  </div>
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -233,10 +241,17 @@ export function FiltersForm({ className, breedOptions }: FiltersFormProps) {
               </FormItem>
             )}
           />
-
-          {/* <Button className="w-full" type="submit" disabled={isPending}> */}
-          <Button className="w-full" type="submit">
-            {/* {isPending ? (
+          <div className="fixed flex gap-2 bottom-0 inset-x-0 p-4 bg-white border-t border-neutral-200 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)]">
+            <Button
+              className="w-1/2"
+              variant="secondary"
+              type="button"
+              onClick={handleReset}
+            >
+              Reset
+            </Button>
+            <Button className="w-1/2" type="submit">
+              {/* {isPending ? (
               <PulseLoader
                 color="white"
                 loading={isPending}
@@ -247,29 +262,11 @@ export function FiltersForm({ className, breedOptions }: FiltersFormProps) {
             ) : (
               "Login"
             )} */}
-            Apply
-          </Button>
+              Apply
+            </Button>
+          </div>
         </form>
       </Form>
     </div>
   );
-}
-
-{
-  /* <form className={cn("grid items-start gap-4", className)}>
-      <MultipleSelector
-        defaultOptions={breedOptions}
-        placeholder="Select breeds..."
-        emptyIndicator={
-          <p className="text-center text-lg leading-10 text-gray-600 dark:text-gray-400">
-            no results found.
-          </p>
-        }
-      />
-      <div className="grid gap-2">
-        <Label htmlFor="breeds">breeds</Label>
-        <Input type="breeds" id="breeds" />
-      </div>
-      <Button type="submit">Apply</Button>
-    </form> */
 }
