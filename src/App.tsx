@@ -10,7 +10,7 @@ function App() {
   const [selectedDogs, setSelectedDogs] = useState<Set<Dog>>(new Set());
 
   const handleUpdateSelectedDogs = (dog: Dog) => {
-    if (selectedDogs.size >= 10 && !selectedDogs.has(dog)) return;
+    if (selectedDogs.size >= 100 && !selectedDogs.has(dog)) return;
 
     if (!selectedDogs.has(dog)) {
       setSelectedDogs(new Set([...selectedDogs, dog]));
