@@ -23,9 +23,13 @@ export function useFetchBreeds() {
   });
 }
 
-export function useIdentifyMatch(dogIds: string[]) {
+export function useIdentifyMatch(
+  dogIds: string[],
+  options?: { enabled?: boolean }
+) {
   return useQuery({
     queryKey: ["dogs", "match", { ids: dogIds }],
     queryFn: () => identifyMatch(dogIds),
+    ...options,
   });
 }
