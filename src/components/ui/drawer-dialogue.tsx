@@ -45,7 +45,10 @@ export function DrawerDialog({ breeds }: { breeds: string[] }) {
           <DialogHeader>
             <DialogTitle>Filters</DialogTitle>
           </DialogHeader>
-          <FiltersForm breedOptions={breedOptions} />
+          <FiltersForm
+            breedOptions={breedOptions}
+            onClose={() => setOpen(false)}
+          />
         </DialogContent>
       </Dialog>
     );
@@ -63,12 +66,11 @@ export function DrawerDialog({ breeds }: { breeds: string[] }) {
           <DrawerHeader className="text-left">
             <DrawerTitle>Filters</DrawerTitle>
           </DrawerHeader>
-          <FiltersForm breedOptions={breedOptions} />
+          <FiltersForm
+            breedOptions={breedOptions}
+            onClose={() => setOpen(false)}
+          />
         </div>
-        {/* <DrawerClose asChild>
-          <Button variant="outline">Reset</Button>
-        </DrawerClose>
-        <DrawerFooter className="pt-2"></DrawerFooter> */}
       </DrawerContent>
     </Drawer>
   );

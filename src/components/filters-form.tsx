@@ -1,14 +1,9 @@
 import MultipleSelector, { Option } from "@/components/ui/multiple-selector";
-import { cn } from "@/lib/utils";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { cn } from "@/lib/utils";
 
 import { Button } from "@/components/ui/button";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import * as z from "zod";
-import * as React from "react";
+import { DualRangeSlider } from "@/components/ui/dual-range-slider";
 import {
   Form,
   FormControl,
@@ -17,10 +12,14 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { DualRangeSlider } from "@/components/ui/dual-range-slider";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as React from "react";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
 
+import { useSearchDogs } from "@/services/dogService";
 import { useSearchParams } from "react-router";
-// import { searchDogs } from "@/api/dogs";
+import PulseLoader from "react-spinners/PulseLoader";
 
 const optionSchema = z.object({
   label: z.string(),
@@ -45,9 +44,15 @@ const FormSchema = z.object({
 
 interface FiltersFormProps extends React.ComponentProps<"form"> {
   breedOptions: Option[];
+  onClose: () => void;
 }
 
-export function FiltersForm({ className, breedOptions }: FiltersFormProps) {
+export function FiltersForm({
+  className,
+  breedOptions,
+  onClose,
+}: FiltersFormProps) {
+  const [resultsTotal, setResultsTotal] = React.useState(10_000);
   const [searchParams, setSearchParams] = useSearchParams();
 
   const defaultValues = React.useMemo(
@@ -58,7 +63,7 @@ export function FiltersForm({ className, breedOptions }: FiltersFormProps) {
         .map((breed) => ({ value: breed, label: breed })),
       ageRange: [
         Number(searchParams.get("ageMin")) || 0,
-        Number(searchParams.get("ageMax")) || 30,
+        Number(searchParams.get("ageMax")) || 14,
       ],
       zipCodes: searchParams
         .getAll("zipCodes")
@@ -72,28 +77,9 @@ export function FiltersForm({ className, breedOptions }: FiltersFormProps) {
     defaultValues,
   });
 
-  // const breeds = form.watch("breeds");
+  const formValues = form.watch();
 
-  // React.useEffect(() => {
-  //   async function calcTotalDogs() {
-  //     // console.log("searchParams: ", searchParams.toString());
-
-  //     // console.log("Breeds selection changed:", breeds);
-
-  //     const newSearchParams = new URLSearchParams(searchParams.toString());
-
-  //     breeds.forEach((breed) => newSearchParams.append("breeds", breed.value));
-  //     // breeds=Affenpinscher&breeds=African+Hunting+Dog&breeds=Airedale&breeds=Appenzeller&breeds=American+Staffordshire+Terrier
-
-  //     const searchResults = await searchDogs(newSearchParams.toString());
-  //     console.log("SEARCH RESULTS: ", searchResults);
-  //     setTotalDogs(searchResults.total);
-  //   }
-
-  //   calcTotalDogs();
-  // }, [breeds, searchParams]);
-
-  function onSubmit(data: z.infer<typeof FormSchema>) {
+  const buildSearchParams = (data: z.infer<typeof FormSchema>) => {
     const params = new URLSearchParams();
 
     if (data.sort) params.append("sort", data.sort);
@@ -103,18 +89,45 @@ export function FiltersForm({ className, breedOptions }: FiltersFormProps) {
     );
     params.append("ageMin", data.ageRange[0].toString());
     params.append("ageMax", data.ageRange[1].toString());
+    return params;
+  };
 
+  const searchParamsString = buildSearchParams(formValues).toString();
+
+  const {
+    isPending: isLoadingSearchData,
+    isError: isSearchError,
+    data: searchData,
+  } = useSearchDogs(searchParamsString);
+
+  React.useEffect(() => {
+    if (searchData?.total !== undefined) {
+      setResultsTotal(searchData.total);
+    }
+  }, [searchData?.total]);
+
+  function onSubmit(data: z.infer<typeof FormSchema>) {
+    const params = buildSearchParams(data);
     setSearchParams(params);
+    onClose();
   }
 
   const handleReset = () => {
     form.reset({
       sort: "breed:asc",
       breeds: [],
-      ageRange: [0, 30],
+      ageRange: [0, 14],
       zipCodes: [],
     });
     setSearchParams(new URLSearchParams("?sort=breed:asc"));
+  };
+
+  const renderPrimaryButtonText = (resultsTotal: number) => {
+    if (resultsTotal === 0) return "No dogs found";
+    if (resultsTotal > 1000) return "Show 1000+ dogs";
+    return `Show ${resultsTotal.toLocaleString()} dog${
+      resultsTotal === 1 ? "" : "s"
+    }`;
   };
 
   return (
@@ -194,7 +207,7 @@ export function FiltersForm({ className, breedOptions }: FiltersFormProps) {
                   <MultipleSelector
                     {...field}
                     defaultOptions={breedOptions}
-                    placeholder="Select one or multiple breeds"
+                    placeholder="Select one or more breeds"
                   />
                 </FormControl>
                 <FormMessage />
@@ -215,7 +228,7 @@ export function FiltersForm({ className, breedOptions }: FiltersFormProps) {
                       value={field.value}
                       onValueChange={field.onChange}
                       min={0}
-                      max={30}
+                      max={14}
                       step={1}
                     />
                   </div>
@@ -235,7 +248,7 @@ export function FiltersForm({ className, breedOptions }: FiltersFormProps) {
                     {...field}
                     defaultOptions={[]}
                     creatable
-                    placeholder="Select one or multiple zip codes"
+                    placeholder="Select one or more zip codes"
                   />
                 </FormControl>
               </FormItem>
@@ -250,19 +263,22 @@ export function FiltersForm({ className, breedOptions }: FiltersFormProps) {
             >
               Reset
             </Button>
-            <Button className="w-1/2" type="submit">
-              {/* {isPending ? (
-              <PulseLoader
-                color="white"
-                loading={isPending}
-                size={8}
-                aria-label="Loading Spinner"
-                data-testid="loader"
-              />
-            ) : (
-              "Login"
-            )} */}
-              Apply
+            <Button
+              className="w-1/2"
+              type="submit"
+              disabled={resultsTotal === 0}
+            >
+              {isLoadingSearchData ? (
+                <PulseLoader
+                  color="white"
+                  loading={isLoadingSearchData}
+                  size={8}
+                  aria-label="Loading Spinner"
+                  data-testid="loader"
+                />
+              ) : (
+                renderPrimaryButtonText(resultsTotal)
+              )}
             </Button>
           </div>
         </form>
