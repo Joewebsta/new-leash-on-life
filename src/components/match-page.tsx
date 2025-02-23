@@ -1,10 +1,10 @@
+import { DogContent } from "@/components/dog-content";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useIdentifyMatch } from "@/services/dogService";
 import { Dog } from "@/types/types";
-import { useNavigate } from "react-router";
 import { useEffect, useMemo } from "react";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { Cake, MapPin } from "lucide-react";
+import { useNavigate } from "react-router";
 
 export default function MatchPage({
   selectedDogs,
@@ -74,30 +74,7 @@ export default function MatchPage({
             <CardTitle>You've matched with {matchedDog.name}.</CardTitle>
           </CardHeader>
           <CardContent>
-            <img
-              key={matchedDog.id}
-              src={matchedDog.img}
-              alt={matchedDog.name}
-              className="rounded-xl mb-3 aspect-square object-cover w-full"
-            />
-            <div className="flex flex-col gap-[2px]">
-              <p className="text-2xl font-bold">{matchedDog.name}</p>
-              <p className="text-lg truncate">{matchedDog.breed}</p>
-              <p className="flex gap-1 text-neutral-500">
-                <Cake size={20} />
-                <span>
-                  {matchedDog.age < 1
-                    ? "less than 1 year old"
-                    : `${matchedDog.age} year${
-                        matchedDog.age === 1 ? "" : "s"
-                      } old`}
-                </span>
-              </p>
-              <p className="flex gap-1 text-neutral-500">
-                <MapPin size={20} />
-                <span>Zipcode: {matchedDog.zip_code}</span>
-              </p>
-            </div>
+            <DogContent dog={matchedDog} />
           </CardContent>
         </Card>
         <div className="w-full">
