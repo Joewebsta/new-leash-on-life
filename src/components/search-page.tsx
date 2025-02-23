@@ -1,4 +1,5 @@
 import { DogSearchCard } from "@/components/dog-search-card";
+import { LoadingSpinner } from "@/components/loading-spinner";
 import { MobileMatchButton } from "@/components/mobile-match-button";
 import { SearchHeader } from "@/components/search-header";
 import {
@@ -55,7 +56,7 @@ export function SearchPage({
   };
 
   if (isLoadingSearchData && isLoadingDogs) {
-    return <div>LOADING...</div>;
+    return <LoadingSpinner loading={isLoadingSearchData && isLoadingDogs} />;
   }
 
   return (

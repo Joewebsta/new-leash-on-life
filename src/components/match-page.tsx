@@ -1,4 +1,5 @@
 import { DogContent } from "@/components/dog-content";
+import { LoadingSpinner } from "@/components/loading-spinner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useIdentifyMatch } from "@/services/dogService";
@@ -46,11 +47,7 @@ export default function MatchPage({
   }
 
   if (isLoadingMatch) {
-    return (
-      <div>
-        <h1>LOADING...</h1>
-      </div>
-    );
+    return <LoadingSpinner loading={isLoadingMatch} />;
   }
 
   const matchedDogId = matchData.match;
