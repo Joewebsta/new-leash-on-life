@@ -1,7 +1,6 @@
-import * as React from "react";
 import { Button } from "@/components/ui/button";
+import * as React from "react";
 
-import { useMediaQuery } from "@/hooks/useMediaQuery";
 import {
   Dialog,
   DialogContent,
@@ -12,14 +11,12 @@ import {
 } from "@/components/ui/dialog";
 import {
   Drawer,
-  DrawerClose,
   DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 
 import { FiltersForm } from "@/components/filters-form";
 import { Settings2 } from "lucide-react";
