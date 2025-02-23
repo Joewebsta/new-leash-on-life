@@ -23,7 +23,7 @@ export function SearchHeader({
         className="hidden sm:inline-flex"
       >
         <SearchIcon />
-        Find Your Pawfect Match
+        Find your pawfect match
       </Button>
     </div>
   );

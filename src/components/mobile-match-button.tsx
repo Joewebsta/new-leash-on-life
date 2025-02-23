@@ -19,7 +19,7 @@ export function MobileMatchButton({
         className="w-full"
       >
         <SearchIcon />
-        Find Your Pawfect Match
+        Find your pawfect match
       </Button>
     </div>
   );
