@@ -132,6 +132,13 @@ export function FiltersForm({
 
   return (
     <div className={cn("pb-[98px] px-4", className)}>
+      {isSearchError && (
+        <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-md">
+          <p className="text-red-600 text-sm">
+            There was an error loading the search results. Please try again.
+          </p>
+        </div>
+      )}
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           <FormField
