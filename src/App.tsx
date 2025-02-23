@@ -3,6 +3,7 @@ import { LoginForm } from "@/components/login-form";
 import MatchPage from "@/components/match-page";
 import { SearchPage } from "@/components/search-page";
 import { Dog } from "@/types/types";
+import { Analytics } from "@vercel/analytics/react";
 import { useState } from "react";
 import { Route, Routes } from "react-router";
 
@@ -27,30 +28,33 @@ function App() {
   const handleResetSelectedDogs = () => setSelectedDogs(new Set());
 
   return (
-    <Routes>
-      <Route index element={<LoginForm />} />
-      <Route path="/login" element={<LoginForm />} />
-      <Route element={<Layout />}>
-        <Route
-          path="/dogs/search"
-          element={
-            <SearchPage
-              selectedDogs={selectedDogs}
-              onUpdateSelectedDogs={handleUpdateSelectedDogs}
-            />
-          }
-        />
-        <Route
-          path="/dogs/match"
-          element={
-            <MatchPage
-              selectedDogs={selectedDogs}
-              onResetSelectedDogs={handleResetSelectedDogs}
-            />
-          }
-        />
-      </Route>
-    </Routes>
+    <>
+      <Routes>
+        <Route index element={<LoginForm />} />
+        <Route path="/login" element={<LoginForm />} />
+        <Route element={<Layout />}>
+          <Route
+            path="/dogs/search"
+            element={
+              <SearchPage
+                selectedDogs={selectedDogs}
+                onUpdateSelectedDogs={handleUpdateSelectedDogs}
+              />
+            }
+          />
+          <Route
+            path="/dogs/match"
+            element={
+              <MatchPage
+                selectedDogs={selectedDogs}
+                onResetSelectedDogs={handleResetSelectedDogs}
+              />
+            }
+          />
+        </Route>
+      </Routes>
+      <Analytics />
+    </>
   );
 }
 
