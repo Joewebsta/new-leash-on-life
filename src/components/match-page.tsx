@@ -28,7 +28,6 @@ export default function MatchPage({
   const {
     isPending: isLoadingMatch,
     isError: isMatchError,
-    error: matchError,
     data: matchData,
   } = useIdentifyMatch(selectedDogIds, {
     enabled: selectedDogsArr.length > 0,
@@ -38,10 +37,26 @@ export default function MatchPage({
     return;
   }
 
+  const handleNewSearch = () => {
+    navigate("/dogs/search?sort=breed:asc");
+    onResetSelectedDogs();
+  };
+
   if (isMatchError) {
     return (
-      <div>
-        <h1>Error finding a match. Please try again.</h1>
+      <div className="px-6 min-h-screen flex items-center justify-center">
+        <div className="w-full max-w-md flex flex-col gap-6">
+          <h1 className="text-red-600 font-medium text-center">
+            Error finding a match
+          </h1>
+          <Button
+            variant="secondary"
+            className="w-full"
+            onClick={handleNewSearch}
+          >
+            Return to Search
+          </Button>
+        </div>
       </div>
     );
   }
@@ -54,11 +69,6 @@ export default function MatchPage({
   const matchedDog = selectedDogsArr.find(
     (dog) => dog.id === matchedDogId
   ) as Dog;
-
-  const handleNewSearch = () => {
-    navigate("/dogs/search?sort=breed:asc");
-    onResetSelectedDogs();
-  };
 
   return (
     <div className="px-6 min-h-screen flex items-center justify-center">
