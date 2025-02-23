@@ -44,6 +44,7 @@ export function DrawerDialog({ breeds }: { breeds: string[] }) {
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
             <DialogTitle>Filters</DialogTitle>
+            <DialogDescription></DialogDescription>
           </DialogHeader>
           <FiltersForm
             breedOptions={breedOptions}
@@ -65,6 +66,7 @@ export function DrawerDialog({ breeds }: { breeds: string[] }) {
         <div className="overflow-scroll">
           <DrawerHeader className="text-left">
             <DrawerTitle>Filters</DrawerTitle>
+            <DialogDescription></DialogDescription>
           </DrawerHeader>
           <FiltersForm
             breedOptions={breedOptions}
