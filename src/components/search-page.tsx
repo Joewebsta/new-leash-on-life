@@ -40,11 +40,7 @@ export function SearchPage({
     data: dogsData,
   } = useFetchDogs(dogIds ?? []);
 
-  const {
-    isPending: isLoadingBreeds,
-    isError: isDogBreedsError,
-    data: dogBreeds,
-  } = useFetchBreeds();
+  const { data: dogBreeds } = useFetchBreeds();
 
   const handleNextResults = () => {
     if (searchData?.next) {
@@ -65,6 +61,13 @@ export function SearchPage({
   return (
     <div className="pb-[84px] sm:pb-0 px-6 md:px-10 xl:px-20">
       <div>
+        {(isSearchError || isDogsError) && (
+          <div className="p-4 mt-6 bg-red-50 border border-red-200 rounded-md">
+            <p className="text-red-600 text-sm">
+              There was an error loading the search results. Please try again.
+            </p>
+          </div>
+        )}
         <SearchHeader
           breeds={dogBreeds || []}
           selectedDogs={selectedDogs}
