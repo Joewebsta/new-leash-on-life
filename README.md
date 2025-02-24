@@ -4,7 +4,9 @@ A web application for searching and managing dog adoptions.
 
 ## Live Website
 
-[Visit A New Leash on Life](https://new-leash-on-life.vercel.app)
+<a href="https://new-leash-on-life.vercel.app" target="_blank" rel="noopener noreferrer">Visit A New Leash on Life</a>
+
+View in Chrome or Firefox for best experience.
 
 ## Prerequisites
 
