@@ -6,7 +6,9 @@ A web application for searching and managing dog adoptions.
 
 <a href="https://new-leash-on-life.vercel.app" target="_blank" rel="noopener noreferrer">Visit A New Leash on Life</a>
 
-View in Chrome or Firefox for the best experience. Despite my best efforts, I could not get the application working in Safari. The required cookies are not being set...
+View in Chrome or Firefox for the best experience.
+
+To view in Safari you must allow sending cross-site cookies. Go to Safari > Preferences > Privacy and uncheck Prevent cross-site tracking.
 
 ## Prerequisites
 
