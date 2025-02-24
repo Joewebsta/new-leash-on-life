@@ -1,6 +1,7 @@
 import Layout from "@/components/layout";
 import { LoginForm } from "@/components/login-form";
 import MatchPage from "@/components/match-page";
+import NotFound from "@/components/not-found";
 import { SearchPage } from "@/components/search-page";
 import { Dog } from "@/types/types";
 import { Analytics } from "@vercel/analytics/react";
@@ -52,6 +53,7 @@ function App() {
             }
           />
         </Route>
+        <Route path="*" element={<NotFound />} />
       </Routes>
       <Analytics />
     </>
