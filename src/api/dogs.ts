@@ -1,4 +1,4 @@
-import { BASE_URL } from "@/api/auth";
+import { BASE_URL } from "@/lib/constants";
 import { Dog, Match, SearchData } from "@/types/types";
 
 export async function searchDogs(searchParams?: string): Promise<SearchData> {

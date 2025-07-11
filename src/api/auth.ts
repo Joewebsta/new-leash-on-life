@@ -1,7 +1,6 @@
 import { loginFormSchema } from "@/schemas/schema";
 import { z } from "zod";
-
-export const BASE_URL = "https://frontend-take-home-service.fetch.com";
+import { BASE_URL } from "@/lib/constants";
 
 export async function performLogin(values: z.infer<typeof loginFormSchema>) {
   const response = await fetch(`${BASE_URL}/auth/login`, {
