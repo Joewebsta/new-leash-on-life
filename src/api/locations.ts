@@ -30,7 +30,7 @@ export async function searchLocations(
 export async function fetchLocations(zipCodes: string[]): Promise<Location[]> {
   zipCodesSchema.parse(zipCodes);
 
-  const response = await fetch(`${BASE_URL}/locations/zip-codes`, {
+  const response = await fetch(`${BASE_URL}/locations/`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
