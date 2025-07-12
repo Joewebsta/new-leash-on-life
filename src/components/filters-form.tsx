@@ -30,6 +30,7 @@ const FormSchema = z.object({
   breeds: z.array(optionSchema),
   ageRange: z.array(z.number()).length(2),
   zipCodes: z.array(optionSchema),
+  location: z.array(optionSchema),
   sort: z
     .enum([
       "name:asc",
@@ -68,6 +69,9 @@ export function FiltersForm({
       zipCodes: searchParams
         .getAll("zipCodes")
         .map((zipCode) => ({ value: zipCode, label: zipCode })),
+      location: searchParams
+        .getAll("location")
+        .map((location) => ({ value: location, label: location })),
     }),
     [searchParams]
   );
@@ -89,6 +93,11 @@ export function FiltersForm({
     );
     params.append("ageMin", data.ageRange[0].toString());
     params.append("ageMax", data.ageRange[1].toString());
+
+    data.location.forEach((location) =>
+      params.append("location", location.value)
+    );
+
     return params;
   };
 
@@ -117,6 +126,7 @@ export function FiltersForm({
       sort: "breed:asc",
       breeds: [],
       ageRange: [0, 14],
+      location: [],
       zipCodes: [],
     });
     setSearchParams(new URLSearchParams("?sort=breed:asc"));
@@ -160,7 +170,7 @@ export function FiltersForm({
       console.log("data", data);
 
       return (data.features || []).map((feature) => ({
-        value: feature.id,
+        value: feature.properties.full_address,
         label: feature.properties.full_address,
         // Store coordinates for potential future use
         // coordinates: feature.center,
