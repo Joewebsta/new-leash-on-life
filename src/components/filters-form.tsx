@@ -147,8 +147,7 @@ export function FiltersForm({
       const response = await fetch(
         `https://api.mapbox.com/search/geocode/v6/forward?q=${encodeURIComponent(
           query
-        )}&access_token=${MAPBOX_TOKEN}&autocomplete=true&types=place&limit=5&country=US`
-        // )}&access_token=${MAPBOX_TOKEN}&autocomplete=true&types=place,region,postcode&limit=5&country=US`
+        )}&access_token=${MAPBOX_TOKEN}&autocomplete=true&types=place,region,postcode&limit=5&country=US`
       );
 
       if (!response.ok) {
