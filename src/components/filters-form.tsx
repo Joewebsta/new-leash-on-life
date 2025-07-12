@@ -130,6 +130,48 @@ export function FiltersForm({
     }`;
   };
 
+  interface Feature {
+    id: string;
+    place_name: string;
+    center: [number, number];
+  }
+
+  const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_ACCESS_TOKEN!;
+
+  const searchLocations = async (query: string): Promise<Option[]> => {
+    if (!query.trim()) {
+      return [];
+    }
+
+    try {
+      const response = await fetch(
+        `https://api.mapbox.com/search/geocode/v6/forward?q=${encodeURIComponent(
+          query
+        )}&access_token=${MAPBOX_TOKEN}&autocomplete=true&types=place&limit=5&country=US`
+        // )}&access_token=${MAPBOX_TOKEN}&autocomplete=true&types=place,region,postcode&limit=5&country=US`
+      );
+
+      if (!response.ok) {
+        throw new Error(`Geocoding API error: ${response.status}`);
+      }
+
+      const data: { features: Feature[] } = await response.json();
+
+      console.log("data", data.features[0].properties.full_address);
+      console.log("data", data);
+
+      return (data.features || []).map((feature) => ({
+        value: feature.id,
+        label: feature.properties.full_address,
+        // Store coordinates for potential future use
+        // coordinates: feature.center,
+      }));
+    } catch (error) {
+      console.error("Error searching locations:", error);
+      return [];
+    }
+  };
+
   return (
     <div className={cn("pb-[98px] px-4 md:px-0", className)}>
       {isSearchError && (
@@ -246,6 +288,36 @@ export function FiltersForm({
           />
           <FormField
             control={form.control}
+            name="location"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Location</FormLabel>
+                <FormControl>
+                  <MultipleSelector
+                    {...field}
+                    onSearch={searchLocations}
+                    placeholder="City, state or ZIP"
+                    maxSelected={1}
+                    delay={300}
+                    triggerSearchOnFocus={false}
+                    loadingIndicator={
+                      <div className="py-3.5 px-2 text-sm opacity-50 text-muted-foreground">
+                        Loading...
+                      </div>
+                    }
+                    emptyIndicator={
+                      <div className="py-2 text-sm text-muted-foreground">
+                        No locations found
+                      </div>
+                    }
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          {/* <FormField
+            control={form.control}
             name="zipCodes"
             render={({ field }) => (
               <FormItem>
@@ -260,7 +332,7 @@ export function FiltersForm({
                 </FormControl>
               </FormItem>
             )}
-          />
+          /> */}
           <div className="fixed flex gap-2 bottom-0 inset-x-0 p-4 bg-white border-t border-neutral-200 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)]">
             <Button
               className="w-1/2"
