@@ -33,7 +33,7 @@ export function SearchHeader({
       </Tabs>
 
       <div className="flex gap-3">
-        <DrawerDialog breeds={breeds} />
+        {activeTab === "browse-all" && <DrawerDialog breeds={breeds} />}
         <Button
           onClick={onNavigateToMatch}
           disabled={selectedDogs.size === 0}
