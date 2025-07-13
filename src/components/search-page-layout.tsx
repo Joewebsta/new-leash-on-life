@@ -31,9 +31,11 @@ export const SearchPageLayout = ({
       />
       {children}
     </div>
-    <MobileMatchButton
-      selectedDogs={selectedDogs}
-      onNavigateToMatch={onNavigateToMatch}
-    />
+    {selectedDogs.length > 0 && (
+      <MobileMatchButton
+        selectedDogs={selectedDogs}
+        onNavigateToMatch={onNavigateToMatch}
+      />
+    )}
   </div>
 );
