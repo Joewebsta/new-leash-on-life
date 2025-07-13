@@ -1,11 +1,11 @@
-import { DogSearchCard } from "@/components/dog-search-card";
+import { DogGrid } from "@/components/dog-grid";
 import { DogGridSkeleton } from "@/components/skeletons/dog-grid-skeleton";
+import { EmptyFavorites } from "@/components/empty-favorites";
 import { MobileMatchButton } from "@/components/mobile-match-button";
 import { MobileMatchButtonSkeleton } from "@/components/skeletons/mobile-match-button-skeleton";
 import { SearchHeader } from "@/components/search-header";
 import { HeaderSkeleton } from "@/components/skeletons/header-skeleton";
 import { SearchPagination } from "@/components/search-pagination";
-import { Button } from "@/components/ui/button";
 import {
   useFetchBreeds,
   useFetchDogs,
@@ -44,9 +44,6 @@ export function SearchPage({
 
   const { data: dogBreeds } = useFetchBreeds();
 
-  const displayedDogs =
-    activeTab === "favorites" ? Array.from(selectedDogs) : dogsData;
-
   const handleTabChange = (value: "browse-all" | "favorites") => {
     setActiveTab(value);
   };
@@ -61,16 +58,56 @@ export function SearchPage({
     );
   }
 
-  return (
-    <div className="pb-[84px] sm:pb-0 px-6 md:px-10 xl:px-20 flex flex-col flex-1">
-      <div className="flex flex-col flex-1">
-        {(isSearchError || isDogsError) && (
+  if (isSearchError || isDogsError) {
+    return (
+      <div className="pb-[84px] sm:pb-0 px-6 md:px-10 xl:px-20 flex flex-col flex-1">
+        <div className="flex flex-col flex-1">
           <div className="p-4 mt-6 bg-red-50 border border-red-200 rounded-md">
             <p className="text-red-600 text-sm">
               There was an error loading the search results. Please try again.
             </p>
           </div>
-        )}
+        </div>
+      </div>
+    );
+  }
+
+  if (activeTab === "favorites") {
+    const favoriteDogs = Array.from(selectedDogs);
+
+    return (
+      <div className="pb-[84px] sm:pb-0 px-6 md:px-10 xl:px-20 flex flex-col flex-1">
+        <div className="flex flex-col flex-1">
+          <SearchHeader
+            breeds={dogBreeds || []}
+            selectedDogs={selectedDogs}
+            onNavigateToMatch={() => navigate("/dogs/match")}
+            onTabChange={handleTabChange}
+            activeTab={activeTab}
+          />
+
+          {favoriteDogs.length === 0 ? (
+            <EmptyFavorites onBrowseAll={() => setActiveTab("browse-all")} />
+          ) : (
+            <DogGrid
+              dogs={favoriteDogs}
+              selectedDogs={selectedDogs}
+              onUpdateSelectedDogs={onUpdateSelectedDogs}
+            />
+          )}
+        </div>
+
+        <MobileMatchButton
+          selectedDogs={selectedDogs}
+          onNavigateToMatch={() => navigate("/dogs/match")}
+        />
+      </div>
+    );
+  }
+
+  return (
+    <div className="pb-[84px] sm:pb-0 px-6 md:px-10 xl:px-20 flex flex-col flex-1">
+      <div className="flex flex-col flex-1">
         <SearchHeader
           breeds={dogBreeds || []}
           selectedDogs={selectedDogs}
@@ -79,39 +116,13 @@ export function SearchPage({
           activeTab={activeTab}
         />
 
-        {activeTab === "favorites" && displayedDogs?.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-20 text-center">
-            <div className="text-6xl mb-4">💔</div>
-            <h2 className="text-2xl font-semibold text-gray-800 mb-2">
-              No Favorites Yet
-            </h2>
-            <p className="text-gray-500 mb-6 max-w-md">
-              Start browsing dogs and click the heart icon to add them to your
-              favorites!
-            </p>
-            <Button
-              onClick={() => setActiveTab("browse-all")}
-              className="bg-blue-600 hover:bg-blue-700"
-            >
-              Browse All Dogs
-            </Button>
-          </div>
-        ) : (
-          <div className="grid gap-y-11 sm:grid-cols-2 sm:gap-x-6 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 pb-6">
-            {displayedDogs?.map((dog) => (
-              <DogSearchCard
-                key={dog.id}
-                dog={dog}
-                isSelected={selectedDogs.has(dog)}
-                onSelect={onUpdateSelectedDogs}
-              />
-            ))}
-          </div>
-        )}
+        <DogGrid
+          dogs={dogsData || []}
+          selectedDogs={selectedDogs}
+          onUpdateSelectedDogs={onUpdateSelectedDogs}
+        />
 
-        {searchData && activeTab === "browse-all" && (
-          <SearchPagination searchData={searchData} />
-        )}
+        {searchData && <SearchPagination searchData={searchData} />}
       </div>
 
       <MobileMatchButton
