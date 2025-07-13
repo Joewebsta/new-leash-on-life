@@ -57,6 +57,11 @@ export function SearchPage({
     }
   };
 
+  const currentPage = Math.floor(
+    parseInt(searchParams.get("from") || "0") / 25 + 1
+  );
+  const totalPages = Math.ceil((searchData?.total || 0) / 25);
+
   if (isLoadingSearchData || isLoadingDogs) {
     return (
       <div className="pb-[130px] px-6 md:px-10 xl:px-20">
@@ -99,18 +104,33 @@ export function SearchPage({
             <PaginationItem>
               <PaginationPrevious
                 href="#"
-                onClick={handlePrevResults}
+                onClick={(e) => {
+                  e.preventDefault();
+                  handlePrevResults();
+                }}
                 className={
                   !searchData?.prev ? "pointer-events-none opacity-50" : ""
                 }
               />
             </PaginationItem>
+
+            <PaginationItem>
+              <span className="flex items-center px-4 py-2 text-sm text-gray-700">
+                Page {currentPage} of {totalPages}
+              </span>
+            </PaginationItem>
+
             <PaginationItem>
               <PaginationNext
                 href="#"
-                onClick={handleNextResults}
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleNextResults();
+                }}
                 className={
-                  !searchData?.next ? "pointer-events-none opacity-50" : ""
+                  !searchData?.next || currentPage >= totalPages
+                    ? "pointer-events-none opacity-50"
+                    : ""
                 }
               />
             </PaginationItem>
