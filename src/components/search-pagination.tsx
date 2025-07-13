@@ -18,12 +18,14 @@ export function SearchPagination({ searchData }: SearchPaginationProps) {
   const handleNextResults = () => {
     if (searchData?.next) {
       setSearchParams(new URLSearchParams(searchData.next.split("?")[1]));
+      window.scrollTo({ top: 0, behavior: "instant" });
     }
   };
 
   const handlePrevResults = () => {
     if (searchData?.prev) {
       setSearchParams(new URLSearchParams(searchData.prev.split("?")[1]));
+      window.scrollTo({ top: 0, behavior: "instant" });
     }
   };
 
