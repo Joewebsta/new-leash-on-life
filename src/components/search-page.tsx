@@ -13,17 +13,28 @@ import { Dog, ViewMode } from "@/types/types";
 import { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router";
 
+interface SearchPageProps {
+  selectedDogs: Set<Dog>;
+  onUpdateSelectedDogs: (dog: Dog) => void;
+}
+
 export function SearchPage({
   selectedDogs,
   onUpdateSelectedDogs,
-}: {
-  selectedDogs: Set<Dog>;
-  onUpdateSelectedDogs: (dog: Dog) => void;
-}) {
-  const [activeTab, setActiveTab] = useState<ViewMode>("browse-all");
+}: SearchPageProps) {
+  // Navigation & routing
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
+  // Local state
+  const [activeTab, setActiveTab] = useState<ViewMode>("browse-all");
+
+  // Event handlers
+  const handleTabChange = (value: ViewMode) => {
+    setActiveTab(value);
+  };
+
+  // Data fetching
   const {
     isPending: isLoadingSearchData,
     isError: isSearchError,
@@ -40,10 +51,7 @@ export function SearchPage({
 
   const { data: dogBreeds } = useFetchBreeds();
 
-  const handleTabChange = (value: ViewMode) => {
-    setActiveTab(value);
-  };
-
+  // Loading and error states
   if (isLoadingSearchData || isLoadingDogs) {
     return <LoadingSkeleton />;
   }
@@ -52,6 +60,7 @@ export function SearchPage({
     return <ErrorState />;
   }
 
+  // Favorites tab
   if (activeTab === "favorites") {
     const favoriteDogs = Array.from(selectedDogs);
 
