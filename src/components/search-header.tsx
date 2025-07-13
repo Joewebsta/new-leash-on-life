@@ -6,7 +6,7 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface SearchHeaderProps {
   breeds: string[];
-  selectedDogs: Set<Dog>;
+  selectedDogs: Dog[];
   onNavigateToMatch: () => void;
   onTabChange: (value: ViewMode) => void;
   activeTab: ViewMode;
@@ -34,14 +34,16 @@ export function SearchHeader({
 
       <div className="flex gap-3">
         {activeTab === "browse-all" && <DrawerDialog breeds={breeds} />}
-        <Button
-          onClick={onNavigateToMatch}
-          disabled={selectedDogs.size === 0}
-          className="hidden sm:inline-flex"
-        >
-          <SearchIcon />
-          Find your pawfect match
-        </Button>
+        {selectedDogs.length > 0 && (
+          <Button
+            onClick={onNavigateToMatch}
+            disabled={selectedDogs.length === 0}
+            className="hidden sm:inline-flex"
+          >
+            <SearchIcon />
+            Find your pawfect match
+          </Button>
+        )}
       </div>
     </div>
   );

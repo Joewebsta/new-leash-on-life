@@ -10,7 +10,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router";
 
 interface SearchPageProps {
-  selectedDogs: Set<Dog>;
+  selectedDogs: Dog[];
   onUpdateSelectedDogs: (dog: Dog) => void;
 }
 
@@ -44,8 +44,6 @@ export function SearchPage({
 
   // Favorites tab
   if (activeTab === "favorites") {
-    const favoriteDogs = Array.from(selectedDogs);
-
     return (
       <SearchPageLayout
         breeds={breedsData || []}
@@ -54,11 +52,11 @@ export function SearchPage({
         onTabChange={handleTabChange}
         activeTab={activeTab}
       >
-        {favoriteDogs.length === 0 ? (
+        {selectedDogs.length === 0 ? (
           <EmptyFavorites onBrowseAll={() => setActiveTab("browse-all")} />
         ) : (
           <DogGrid
-            dogs={favoriteDogs}
+            dogs={selectedDogs}
             selectedDogs={selectedDogs}
             onUpdateSelectedDogs={onUpdateSelectedDogs}
           />

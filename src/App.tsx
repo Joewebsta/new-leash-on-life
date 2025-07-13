@@ -38,7 +38,7 @@ function App() {
             path="/dogs/search"
             element={
               <SearchPage
-                selectedDogs={selectedDogs}
+                selectedDogs={Array.from(selectedDogs)}
                 onUpdateSelectedDogs={handleUpdateSelectedDogs}
               />
             }
@@ -47,7 +47,7 @@ function App() {
             path="/dogs/match"
             element={
               <MatchPage
-                selectedDogs={selectedDogs}
+                selectedDogs={Array.from(selectedDogs)}
                 onResetSelectedDogs={handleResetSelectedDogs}
               />
             }

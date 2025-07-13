@@ -3,7 +3,7 @@ import { Dog } from "@/types/types";
 
 interface DogGridProps {
   dogs: Dog[];
-  selectedDogs: Set<Dog>;
+  selectedDogs: Dog[];
   onUpdateSelectedDogs: (dog: Dog) => void;
 }
 
@@ -18,7 +18,7 @@ export function DogGrid({
         <DogSearchCard
           key={dog.id}
           dog={dog}
-          isSelected={selectedDogs.has(dog)}
+          isSelected={selectedDogs.some((d) => d.id === dog.id)}
           onSelect={onUpdateSelectedDogs}
         />
       ))}

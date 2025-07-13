@@ -6,7 +6,7 @@ import { ReactNode } from "react";
 interface SearchPageLayoutProps {
   children: ReactNode;
   breeds: string[];
-  selectedDogs: Set<Dog>;
+  selectedDogs: Dog[];
   onNavigateToMatch: () => void;
   onTabChange: (value: ViewMode) => void;
   activeTab: ViewMode;

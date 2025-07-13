@@ -4,36 +4,34 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useIdentifyMatch } from "@/services/dogService";
 import { Dog } from "@/types/types";
-import { useEffect, useMemo } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router";
 
 export default function MatchPage({
   selectedDogs,
   onResetSelectedDogs,
 }: {
-  selectedDogs: Set<Dog>;
+  selectedDogs: Dog[];
   onResetSelectedDogs: () => void;
 }) {
   const navigate = useNavigate();
 
-  const selectedDogsArr = useMemo(() => [...selectedDogs], [selectedDogs]);
-
   useEffect(() => {
-    if (selectedDogsArr.length === 0) {
+    if (selectedDogs.length === 0) {
       navigate("/dogs/search?sort=breed:asc");
     }
-  }, [selectedDogsArr, navigate]);
+  }, [selectedDogs, navigate]);
 
-  const selectedDogIds = selectedDogsArr.map((dog) => dog.id);
+  const selectedDogIds = selectedDogs.map((dog) => dog.id);
   const {
     isPending: isLoadingMatch,
     isError: isMatchError,
     data: matchData,
   } = useIdentifyMatch(selectedDogIds, {
-    enabled: selectedDogsArr.length > 0,
+    enabled: selectedDogs.length > 0,
   });
 
-  if (selectedDogsArr.length === 0) {
+  if (selectedDogs.length === 0) {
     return;
   }
 
@@ -66,8 +64,8 @@ export default function MatchPage({
   }
 
   const matchedDogId = matchData.match;
-  const matchedDog = selectedDogsArr.find(
-    (dog) => dog.id === matchedDogId
+  const matchedDog = selectedDogs.find(
+    (dog: Dog) => dog.id === matchedDogId
   ) as Dog;
 
   return (
