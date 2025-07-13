@@ -73,8 +73,8 @@ export function SearchPage({
   }
 
   return (
-    <div className="pb-[84px] sm:pb-0 px-6 md:px-10 xl:px-20">
-      <div>
+    <div className="pb-[84px] sm:pb-0 px-6 md:px-10 xl:px-20 flex flex-col flex-1">
+      <div className="flex flex-col flex-1">
         {(isSearchError || isDogsError) && (
           <div className="p-4 mt-6 bg-red-50 border border-red-200 rounded-md">
             <p className="text-red-600 text-sm">
@@ -99,7 +99,7 @@ export function SearchPage({
           ))}
         </div>
 
-        <Pagination className="py-6 ">
+        <Pagination className="py-6 mt-auto">
           <PaginationContent>
             <PaginationItem>
               <PaginationPrevious

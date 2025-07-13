@@ -13,7 +13,7 @@ export default function Layout() {
   } = usePerformLogout();
 
   return (
-    <div className="relative min-h-screen">
+    <div className="relative min-h-screen flex flex-col">
       <div className="px-6 md:px-10 xl:px-20 border-b border-neutral-200">
         <header className="flex h-12 items-center justify-between">
           <Link to={"/dogs/search?sort=breed:asc"}>
