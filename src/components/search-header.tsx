@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { DrawerDialog } from "@/components/ui/drawer-dialogue";
-import { Dog } from "@/types/types";
+import { Dog, ViewMode } from "@/types/types";
 import { SearchIcon } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
@@ -8,8 +8,8 @@ interface SearchHeaderProps {
   breeds: string[];
   selectedDogs: Set<Dog>;
   onNavigateToMatch: () => void;
-  onTabChange: (value: "browse-all" | "favorites") => void;
-  activeTab: "browse-all" | "favorites";
+  onTabChange: (value: ViewMode) => void;
+  activeTab: ViewMode;
 }
 
 export function SearchHeader({
@@ -24,9 +24,7 @@ export function SearchHeader({
       <Tabs
         value={activeTab}
         className="w-[400px]"
-        onValueChange={(value) =>
-          onTabChange(value as "browse-all" | "favorites")
-        }
+        onValueChange={(value) => onTabChange(value as ViewMode)}
       >
         <TabsList>
           <TabsTrigger value="browse-all">Browse All</TabsTrigger>

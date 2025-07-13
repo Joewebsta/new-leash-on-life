@@ -17,3 +17,5 @@ export interface SearchData {
 export interface Match {
   match: string;
 }
+
+export type ViewMode = "browse-all" | "favorites";

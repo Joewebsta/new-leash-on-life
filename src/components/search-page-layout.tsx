@@ -1,6 +1,6 @@
 import { MobileMatchButton } from "@/components/mobile-match-button";
 import { SearchHeader } from "@/components/search-header";
-import { Dog } from "@/types/types";
+import { Dog, ViewMode } from "@/types/types";
 import { ReactNode } from "react";
 
 interface SearchPageLayoutProps {
@@ -8,8 +8,8 @@ interface SearchPageLayoutProps {
   breeds: string[];
   selectedDogs: Set<Dog>;
   onNavigateToMatch: () => void;
-  onTabChange: (value: "browse-all" | "favorites") => void;
-  activeTab: "browse-all" | "favorites";
+  onTabChange: (value: ViewMode) => void;
+  activeTab: ViewMode;
 }
 
 export const SearchPageLayout = ({

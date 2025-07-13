@@ -9,7 +9,7 @@ import {
   useFetchDogs,
   useSearchDogs,
 } from "@/services/dogService";
-import { Dog } from "@/types/types";
+import { Dog, ViewMode } from "@/types/types";
 import { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router";
 
@@ -20,9 +20,7 @@ export function SearchPage({
   selectedDogs: Set<Dog>;
   onUpdateSelectedDogs: (dog: Dog) => void;
 }) {
-  const [activeTab, setActiveTab] = useState<"browse-all" | "favorites">(
-    "browse-all"
-  );
+  const [activeTab, setActiveTab] = useState<ViewMode>("browse-all");
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
@@ -42,7 +40,7 @@ export function SearchPage({
 
   const { data: dogBreeds } = useFetchBreeds();
 
-  const handleTabChange = (value: "browse-all" | "favorites") => {
+  const handleTabChange = (value: ViewMode) => {
     setActiveTab(value);
   };
 
