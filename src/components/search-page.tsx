@@ -1,9 +1,9 @@
 import { DogSearchCard } from "@/components/dog-search-card";
-import { DogGridSkeleton } from "@/components/dog-grid-skeleton";
+import { DogGridSkeleton } from "@/components/skeletons/dog-grid-skeleton";
 import { MobileMatchButton } from "@/components/mobile-match-button";
-import { MobileMatchButtonSkeleton } from "@/components/mobile-match-button-skeleton";
+import { MobileMatchButtonSkeleton } from "@/components/skeletons/mobile-match-button-skeleton";
 import { SearchHeader } from "@/components/search-header";
-import { HeaderSkeleton } from "@/components/header-skeleton";
+import { HeaderSkeleton } from "@/components/skeletons/header-skeleton";
 import {
   Pagination,
   PaginationContent,

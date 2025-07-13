@@ -1,4 +1,4 @@
-import { DogCardSkeleton } from "@/components/dog-card-skeleton";
+import { DogCardSkeleton } from "@/components/skeletons/dog-card-skeleton";
 
 interface DogGridSkeletonProps {
   count?: number;
