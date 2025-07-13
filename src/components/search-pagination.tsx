@@ -35,7 +35,7 @@ export function SearchPagination({ searchData }: SearchPaginationProps) {
   const totalPages = Math.ceil((searchData?.total || 0) / 25);
 
   return (
-    <Pagination className="py-6 mt-auto">
+    <Pagination className="pb-6 mt-auto">
       <PaginationContent>
         <PaginationItem>
           <PaginationPrevious
