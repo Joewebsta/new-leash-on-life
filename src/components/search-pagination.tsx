@@ -8,11 +8,7 @@ import {
 import { SearchData } from "@/types/types";
 import { useSearchParams } from "react-router";
 
-interface SearchPaginationProps {
-  searchData: SearchData;
-}
-
-export function SearchPagination({ searchData }: SearchPaginationProps) {
+export function SearchPagination({ searchData }: { searchData: SearchData }) {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const handleNextResults = () => {
