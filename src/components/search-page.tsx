@@ -1,7 +1,9 @@
 import { DogSearchCard } from "@/components/dog-search-card";
-import { LoadingSpinner } from "@/components/loading-spinner";
+import { DogGridSkeleton } from "@/components/dog-grid-skeleton";
 import { MobileMatchButton } from "@/components/mobile-match-button";
+import { MobileMatchButtonSkeleton } from "@/components/mobile-match-button-skeleton";
 import { SearchHeader } from "@/components/search-header";
+import { HeaderSkeleton } from "@/components/header-skeleton";
 import {
   Pagination,
   PaginationContent,
@@ -56,7 +58,13 @@ export function SearchPage({
   };
 
   if (isLoadingSearchData || isLoadingDogs) {
-    return <LoadingSpinner loading={isLoadingSearchData || isLoadingDogs} />;
+    return (
+      <div className="pb-[130px] px-6 md:px-10 xl:px-20">
+        <HeaderSkeleton />
+        <DogGridSkeleton />
+        <MobileMatchButtonSkeleton />
+      </div>
+    );
   }
 
   return (
