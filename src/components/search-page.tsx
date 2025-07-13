@@ -55,8 +55,8 @@ export function SearchPage({
     }
   };
 
-  if (isLoadingSearchData && isLoadingDogs) {
-    return <LoadingSpinner loading={isLoadingSearchData && isLoadingDogs} />;
+  if (isLoadingSearchData || isLoadingDogs) {
+    return <LoadingSpinner loading={isLoadingSearchData || isLoadingDogs} />;
   }
 
   return (
