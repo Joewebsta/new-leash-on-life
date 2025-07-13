@@ -4,14 +4,10 @@ import { ErrorState } from "@/components/error-state";
 import { LoadingSkeleton } from "@/components/loading-skeleton";
 import { SearchPageLayout } from "@/components/search-page-layout";
 import { SearchPagination } from "@/components/search-pagination";
-import {
-  useFetchBreeds,
-  useFetchDogs,
-  useSearchDogs,
-} from "@/services/dogService";
+import { useSearchPageData } from "@/hooks/useSearchPageData";
 import { Dog, ViewMode } from "@/types/types";
 import { useState } from "react";
-import { useNavigate, useSearchParams } from "react-router";
+import { useNavigate } from "react-router";
 
 interface SearchPageProps {
   selectedDogs: Set<Dog>;
@@ -24,7 +20,6 @@ export function SearchPage({
 }: SearchPageProps) {
   // Navigation & routing
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
 
   // Local state
   const [activeTab, setActiveTab] = useState<ViewMode>("browse-all");
@@ -35,28 +30,15 @@ export function SearchPage({
   };
 
   // Data fetching
-  const {
-    isPending: isLoadingSearchData,
-    isError: isSearchError,
-    data: searchData,
-  } = useSearchDogs(searchParams.toString());
-
-  const dogIds = searchData?.resultIds;
-
-  const {
-    isPending: isLoadingDogs,
-    isError: isDogsError,
-    data: dogsData,
-  } = useFetchDogs(dogIds ?? []);
-
-  const { data: dogBreeds } = useFetchBreeds();
+  const { isLoading, isError, searchData, dogsData, breedsData } =
+    useSearchPageData();
 
   // Loading and error states
-  if (isLoadingSearchData || isLoadingDogs) {
+  if (isLoading) {
     return <LoadingSkeleton />;
   }
 
-  if (isSearchError || isDogsError) {
+  if (isError) {
     return <ErrorState />;
   }
 
@@ -66,7 +48,7 @@ export function SearchPage({
 
     return (
       <SearchPageLayout
-        breeds={dogBreeds || []}
+        breeds={breedsData || []}
         selectedDogs={selectedDogs}
         onNavigateToMatch={() => navigate("/dogs/match")}
         onTabChange={handleTabChange}
@@ -88,7 +70,7 @@ export function SearchPage({
   // Browse-all tab
   return (
     <SearchPageLayout
-      breeds={dogBreeds || []}
+      breeds={breedsData || []}
       selectedDogs={selectedDogs}
       onNavigateToMatch={() => navigate("/dogs/match")}
       onTabChange={handleTabChange}
