@@ -20,6 +20,8 @@ import * as z from "zod";
 import { useSearchDogs } from "@/services/dogService";
 import { useSearchParams } from "react-router";
 import PulseLoader from "react-spinners/PulseLoader";
+import { useSearchLocations } from "@/services/locationService";
+import { LocationSearchParams } from "@/types/location";
 
 const optionSchema = z.object({
   label: z.string(),
@@ -55,6 +57,10 @@ export function FiltersForm({
 }: FiltersFormProps) {
   const [resultsTotal, setResultsTotal] = React.useState(10_000);
   const [searchParams, setSearchParams] = useSearchParams();
+  const [locationParams, setLocationParams] =
+    React.useState<LocationSearchParams>({});
+  const [locationZipCodes, setLocationZipCodes] = React.useState<string[]>([]);
+  // const [isLoadingAllLocations, setIsLoadingAllLocations] = React.useState(false);
 
   const defaultValues = React.useMemo(
     () => ({
@@ -83,6 +89,24 @@ export function FiltersForm({
 
   const formValues = form.watch();
 
+  // const {
+  //   isPending: isLoadingSearchData,
+  //   isError: isSearchError,
+  //   data: searchData,
+  // } = useSearchDogs(searchParams.toString());
+
+  const {
+    data: locationData,
+    isPending: isLoadingLocationData,
+    isError: isLocationError,
+  } = useSearchLocations(locationParams);
+
+  // console.log("locationData", locationData);
+  // console.log("isLoadingLocationData", isLoadingLocationData);
+  // console.log("isLocationError", isLocationError);
+  // console.log("--------------------------------");
+  // console.log("");
+
   const buildSearchParams = (data: z.infer<typeof FormSchema>) => {
     const params = new URLSearchParams();
 
@@ -101,19 +125,19 @@ export function FiltersForm({
     return params;
   };
 
-  const searchParamsString = buildSearchParams(formValues).toString();
+  // const searchParamsString = buildSearchParams(formValues).toString();
 
-  const {
-    isPending: isLoadingSearchData,
-    isError: isSearchError,
-    data: searchData,
-  } = useSearchDogs(searchParamsString);
+  // const {
+  //   isPending: isLoadingSearchData,
+  //   isError: isSearchError,
+  //   data: searchData,
+  // } = useSearchDogs(searchParamsString);
 
-  React.useEffect(() => {
-    if (searchData?.total !== undefined) {
-      setResultsTotal(searchData.total);
-    }
-  }, [searchData?.total]);
+  // React.useEffect(() => {
+  //   if (searchData?.total !== undefined) {
+  //     setResultsTotal(searchData.total);
+  //   }
+  // }, [searchData?.total]);
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
     const params = buildSearchParams(data);
@@ -166,12 +190,43 @@ export function FiltersForm({
 
       const data: { features: Feature[] } = await response.json();
 
-      console.log("data", data.features[0].properties.full_address);
-      console.log("data", data);
+      const place = data.features[0].properties?.context?.place?.name || "";
+      const region = data.features[0].properties?.context?.region?.name || "";
+      const postcode =
+        data.features[0].properties?.context?.postcode?.name || "";
+      const country =
+        data.features[0].properties?.context?.country?.country_code || "";
 
+      let formattedLocation = "";
+      const featureType = data.features[0].properties?.feature_type;
+      if (featureType === "postcode") {
+        formattedLocation = `${place}, ${region} ${postcode}, ${country}`;
+      } else if (featureType === "region") {
+        formattedLocation = `${region}, ${country}`;
+      } else if (featureType === "place") {
+        formattedLocation = `${place}, ${region}, ${country}`;
+      }
+
+      const locationParams = {
+        city: data.features[0].properties?.context?.place?.name || undefined,
+        states:
+          data.features[0].properties?.context?.region?.region_code ||
+          undefined,
+        zipCode:
+          data.features[0].properties?.context?.postcode?.name || undefined,
+      };
+      // console.log("featureType", featureType);
+      // console.log("locationParams", locationParams);
+      // setLocationParams(locationParams);
+
+      // console.log("data", data.features[0].properties.full_address);
+      // console.log("data", data);
+
+      // STOPPED HERE: NEED TO UPDATE VALUE AND LABEL. NEEED TO CREATE A FUNCTION?
       return (data.features || []).map((feature) => ({
-        value: feature.properties.full_address,
-        label: feature.properties.full_address,
+        value: feature.properties?.full_address,
+        label: feature.properties?.full_address,
+        metadata: locationParams,
         // Store coordinates for potential future use
         // coordinates: feature.center,
       }));
@@ -183,13 +238,13 @@ export function FiltersForm({
 
   return (
     <div className={cn("pb-[98px] px-4 md:px-0", className)}>
-      {isSearchError && (
+      {/* {isSearchError && (
         <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-md">
           <p className="text-red-600 text-sm">
             There was an error loading the search results. Please try again.
           </p>
         </div>
-      )}
+      )} */}
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           <FormField
@@ -309,6 +364,9 @@ export function FiltersForm({
                     maxSelected={1}
                     delay={300}
                     triggerSearchOnFocus={false}
+                    onChange={(value) => {
+                      console.log("value", value);
+                    }}
                     loadingIndicator={
                       <div className="py-3.5 px-2 text-sm opacity-50 text-muted-foreground">
                         Loading...
@@ -356,7 +414,8 @@ export function FiltersForm({
               type="submit"
               disabled={resultsTotal === 0}
             >
-              {isLoadingSearchData ? (
+              {renderPrimaryButtonText(resultsTotal)}
+              {/* {isLoadingSearchData ? (
                 <PulseLoader
                   color="white"
                   loading={isLoadingSearchData}
@@ -366,7 +425,7 @@ export function FiltersForm({
                 />
               ) : (
                 renderPrimaryButtonText(resultsTotal)
-              )}
+              )} */}
             </Button>
           </div>
         </form>
