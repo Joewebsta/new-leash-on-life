@@ -12,7 +12,7 @@ export function DogSearchCard({ dog, isSelected, onSelect }: DogCardProps) {
   return (
     <div className="relative">
       <button
-        className="absolute top-3 right-3"
+        className="absolute top-3 right-3 z-10"
         onMouseDown={() => onSelect(dog)}
       >
         <Heart
