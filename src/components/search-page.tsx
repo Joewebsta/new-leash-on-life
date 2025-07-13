@@ -4,13 +4,7 @@ import { MobileMatchButton } from "@/components/mobile-match-button";
 import { MobileMatchButtonSkeleton } from "@/components/skeletons/mobile-match-button-skeleton";
 import { SearchHeader } from "@/components/search-header";
 import { HeaderSkeleton } from "@/components/skeletons/header-skeleton";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
+import { SearchPagination } from "@/components/search-pagination";
 import {
   useFetchBreeds,
   useFetchDogs,
@@ -27,7 +21,7 @@ export function SearchPage({
   onUpdateSelectedDogs: (dog: Dog) => void;
 }) {
   const navigate = useNavigate();
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
 
   const {
     isPending: isLoadingSearchData,
@@ -44,23 +38,6 @@ export function SearchPage({
   } = useFetchDogs(dogIds ?? []);
 
   const { data: dogBreeds } = useFetchBreeds();
-
-  const handleNextResults = () => {
-    if (searchData?.next) {
-      setSearchParams(new URLSearchParams(searchData.next.split("?")[1]));
-    }
-  };
-
-  const handlePrevResults = () => {
-    if (searchData?.prev) {
-      setSearchParams(new URLSearchParams(searchData.prev.split("?")[1]));
-    }
-  };
-
-  const currentPage = Math.floor(
-    parseInt(searchParams.get("from") || "0") / 25 + 1
-  );
-  const totalPages = Math.ceil((searchData?.total || 0) / 25);
 
   if (isLoadingSearchData || isLoadingDogs) {
     return (
@@ -99,43 +76,7 @@ export function SearchPage({
           ))}
         </div>
 
-        <Pagination className="py-6 mt-auto">
-          <PaginationContent>
-            <PaginationItem>
-              <PaginationPrevious
-                href="#"
-                onClick={(e) => {
-                  e.preventDefault();
-                  handlePrevResults();
-                }}
-                className={
-                  !searchData?.prev ? "pointer-events-none opacity-50" : ""
-                }
-              />
-            </PaginationItem>
-
-            <PaginationItem>
-              <span className="flex items-center px-4 py-2 text-sm text-gray-700">
-                Page {currentPage} of {totalPages}
-              </span>
-            </PaginationItem>
-
-            <PaginationItem>
-              <PaginationNext
-                href="#"
-                onClick={(e) => {
-                  e.preventDefault();
-                  handleNextResults();
-                }}
-                className={
-                  !searchData?.next || currentPage >= totalPages
-                    ? "pointer-events-none opacity-50"
-                    : ""
-                }
-              />
-            </PaginationItem>
-          </PaginationContent>
-        </Pagination>
+        {searchData && <SearchPagination searchData={searchData} />}
       </div>
 
       <MobileMatchButton
