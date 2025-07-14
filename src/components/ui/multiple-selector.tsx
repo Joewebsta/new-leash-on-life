@@ -458,7 +458,7 @@ const MultipleSelector = React.forwardRef<
           className={cn(
             "min-h-10 rounded-md border border-input text-base md:text-sm ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2",
             {
-              "px-3 py-2": selected.length !== 0,
+              "px-3 py-2": selected.length >= 0,
               "cursor-text": !disabled && selected.length !== 0,
             },
             className
@@ -532,7 +532,7 @@ const MultipleSelector = React.forwardRef<
                 "flex-1 bg-transparent outline-none placeholder:text-muted-foreground",
                 {
                   "w-full": hidePlaceholderWhenSelected,
-                  "px-3 py-2": selected.length === 0,
+                  // "px-3 py-2": selected.length >= 0,
                   "ml-1": selected.length !== 0,
                 },
                 inputProps?.className
@@ -556,11 +556,9 @@ const MultipleSelector = React.forwardRef<
               <X />
             </button>
           </div>
-        </div>
-        <div className="relative">
-          {open && (
+          <div className="relative mt-2">
             <CommandList
-              className="absolute top-1 z-10 w-full rounded-md border bg-popover text-popover-foreground shadow-md outline-none animate-in"
+              className="w-full rounded-md border bg-popover text-popover-foreground outline-none animate-in"
               onMouseLeave={() => {
                 setOnScrollbar(false);
               }}
@@ -623,7 +621,7 @@ const MultipleSelector = React.forwardRef<
                 </>
               )}
             </CommandList>
-          )}
+          </div>
         </div>
       </Command>
     );

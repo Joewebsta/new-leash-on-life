@@ -1,45 +1,27 @@
-import Layout from "@/components/layout";
-import { LoginForm } from "@/components/login-form";
+import Layout from "@/components/layout/layout";
+import { LoginPage } from "@/components/login-page";
 import MatchPage from "@/components/match-page";
-import NotFound from "@/components/not-found";
+import NotFoundPage from "@/components/not-found-page";
 import { SearchPage } from "@/components/search-page";
-import { Dog } from "@/types/types";
 import { Analytics } from "@vercel/analytics/react";
-import { useState } from "react";
 import { Route, Routes } from "react-router";
-
-const MAX_SELECTED_DOGS = 100;
+import { useSelectedDogs } from "./hooks/useSelectedDogs";
 
 function App() {
-  const [selectedDogs, setSelectedDogs] = useState<Set<Dog>>(new Set());
-
-  const handleUpdateSelectedDogs = (dog: Dog) => {
-    if (selectedDogs.size >= MAX_SELECTED_DOGS && !selectedDogs.has(dog))
-      return;
-
-    if (selectedDogs.has(dog)) {
-      const newSet = new Set(selectedDogs);
-      newSet.delete(dog);
-      setSelectedDogs(newSet);
-    } else {
-      setSelectedDogs(new Set([...selectedDogs, dog]));
-    }
-  };
-
-  const handleResetSelectedDogs = () => setSelectedDogs(new Set());
+  const { selectedDogs, toggleDog, resetSelectedDogs } = useSelectedDogs();
 
   return (
     <>
       <Routes>
-        <Route index element={<LoginForm />} />
-        <Route path="/login" element={<LoginForm />} />
+        <Route index element={<LoginPage />} />
+        <Route path="/login" element={<LoginPage />} />
         <Route element={<Layout />}>
           <Route
             path="/dogs/search"
             element={
               <SearchPage
-                selectedDogs={selectedDogs}
-                onUpdateSelectedDogs={handleUpdateSelectedDogs}
+                selectedDogs={Array.from(selectedDogs)}
+                onUpdateSelectedDogs={toggleDog}
               />
             }
           />
@@ -47,13 +29,13 @@ function App() {
             path="/dogs/match"
             element={
               <MatchPage
-                selectedDogs={selectedDogs}
-                onResetSelectedDogs={handleResetSelectedDogs}
+                selectedDogs={Array.from(selectedDogs)}
+                onResetSelectedDogs={resetSelectedDogs}
               />
             }
           />
         </Route>
-        <Route path="*" element={<NotFound />} />
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
       <Analytics />
     </>

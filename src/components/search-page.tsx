@@ -1,119 +1,85 @@
-import { DogSearchCard } from "@/components/dog-search-card";
-import { LoadingSpinner } from "@/components/loading-spinner";
-import { MobileMatchButton } from "@/components/mobile-match-button";
-import { SearchHeader } from "@/components/search-header";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
-import {
-  useFetchBreeds,
-  useFetchDogs,
-  useSearchDogs,
-} from "@/services/dogService";
-import { Dog } from "@/types/types";
-import { useNavigate, useSearchParams } from "react-router";
+import { DogGrid } from "@/components/dogs/dog-grid";
+import { EmptyFavorites } from "@/components/states/empty-favorites";
+import { ErrorState } from "@/components/states/error-state";
+import { LoadingSkeleton } from "@/components/states/loading-skeleton";
+import { SearchPageLayout } from "@/components/search/search-page-layout";
+import { SearchPagination } from "@/components/search/search-pagination";
+import { useSearchPageData } from "@/hooks/useSearchPageData";
+import { Dog, ViewMode } from "@/types/types";
+import { useState } from "react";
+import { useNavigate } from "react-router";
+
+interface SearchPageProps {
+  selectedDogs: Dog[];
+  onUpdateSelectedDogs: (dog: Dog) => void;
+}
 
 export function SearchPage({
   selectedDogs,
   onUpdateSelectedDogs,
-}: {
-  selectedDogs: Set<Dog>;
-  onUpdateSelectedDogs: (dog: Dog) => void;
-}) {
+}: SearchPageProps) {
+  // Navigation & routing
   const navigate = useNavigate();
-  const [searchParams, setSearchParams] = useSearchParams();
 
-  const {
-    isPending: isLoadingSearchData,
-    isError: isSearchError,
-    data: searchData,
-  } = useSearchDogs(searchParams.toString());
+  // Local state
+  const [activeTab, setActiveTab] = useState<ViewMode>("browse-all");
 
-  const dogIds = searchData?.resultIds;
-
-  const {
-    isPending: isLoadingDogs,
-    isError: isDogsError,
-    data: dogsData,
-  } = useFetchDogs(dogIds ?? []);
-
-  const { data: dogBreeds } = useFetchBreeds();
-
-  const handleNextResults = () => {
-    if (searchData?.next) {
-      setSearchParams(new URLSearchParams(searchData.next.split("?")[1]));
-    }
+  // Event handlers
+  const handleTabChange = (value: ViewMode) => {
+    setActiveTab(value);
   };
 
-  const handlePrevResults = () => {
-    if (searchData?.prev) {
-      setSearchParams(new URLSearchParams(searchData.prev.split("?")[1]));
-    }
-  };
+  // Data fetching
+  const { isLoading, isError, searchData, dogsData, breedsData } =
+    useSearchPageData();
 
-  if (isLoadingSearchData && isLoadingDogs) {
-    return <LoadingSpinner loading={isLoadingSearchData && isLoadingDogs} />;
+  // Loading and error states
+  if (isLoading) {
+    return <LoadingSkeleton />;
   }
 
-  return (
-    <div className="pb-[84px] sm:pb-0 px-6 md:px-10 xl:px-20">
-      <div>
-        {(isSearchError || isDogsError) && (
-          <div className="p-4 mt-6 bg-red-50 border border-red-200 rounded-md">
-            <p className="text-red-600 text-sm">
-              There was an error loading the search results. Please try again.
-            </p>
-          </div>
-        )}
-        <SearchHeader
-          breeds={dogBreeds || []}
-          selectedDogs={selectedDogs}
-          onNavigateToMatch={() => navigate("/dogs/match")}
-        />
+  if (isError) {
+    return <ErrorState />;
+  }
 
-        <div className="grid gap-y-11 sm:grid-cols-2 sm:gap-x-6 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
-          {dogsData?.map((dog) => (
-            <DogSearchCard
-              key={dog.id}
-              dog={dog}
-              isSelected={selectedDogs.has(dog)}
-              onSelect={onUpdateSelectedDogs}
-            />
-          ))}
-        </div>
-
-        <Pagination className="py-6 ">
-          <PaginationContent>
-            <PaginationItem>
-              <PaginationPrevious
-                href="#"
-                onClick={handlePrevResults}
-                className={
-                  !searchData?.prev ? "pointer-events-none opacity-50" : ""
-                }
-              />
-            </PaginationItem>
-            <PaginationItem>
-              <PaginationNext
-                href="#"
-                onClick={handleNextResults}
-                className={
-                  !searchData?.next ? "pointer-events-none opacity-50" : ""
-                }
-              />
-            </PaginationItem>
-          </PaginationContent>
-        </Pagination>
-      </div>
-
-      <MobileMatchButton
+  // Favorites tab
+  if (activeTab === "favorites") {
+    return (
+      <SearchPageLayout
+        breeds={breedsData || []}
         selectedDogs={selectedDogs}
         onNavigateToMatch={() => navigate("/dogs/match")}
+        onTabChange={handleTabChange}
+        activeTab={activeTab}
+      >
+        {selectedDogs.length === 0 ? (
+          <EmptyFavorites onBrowseAll={() => setActiveTab("browse-all")} />
+        ) : (
+          <DogGrid
+            dogs={selectedDogs}
+            selectedDogs={selectedDogs}
+            onUpdateSelectedDogs={onUpdateSelectedDogs}
+          />
+        )}
+      </SearchPageLayout>
+    );
+  }
+
+  // Browse-all tab
+  return (
+    <SearchPageLayout
+      breeds={breedsData || []}
+      selectedDogs={selectedDogs}
+      onNavigateToMatch={() => navigate("/dogs/match")}
+      onTabChange={handleTabChange}
+      activeTab={activeTab}
+    >
+      <DogGrid
+        dogs={dogsData || []}
+        selectedDogs={selectedDogs}
+        onUpdateSelectedDogs={onUpdateSelectedDogs}
       />
-    </div>
+      {searchData && <SearchPagination searchData={searchData} />}
+    </SearchPageLayout>
   );
 }

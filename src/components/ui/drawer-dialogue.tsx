@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/drawer";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 
-import { FiltersForm } from "@/components/filters-form";
+import { FiltersForm } from "@/components/search/filters-form";
 import { Settings2 } from "lucide-react";
 
 export function DrawerDialog({ breeds }: { breeds: string[] }) {

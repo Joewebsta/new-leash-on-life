@@ -5,6 +5,7 @@ export function useSearchDogs(searchParams?: string) {
   return useQuery({
     queryKey: ["dogs", "search", { searchParams }],
     queryFn: () => searchDogs(searchParams),
+    enabled: !!searchParams?.trim(),
   });
 }
 
@@ -12,7 +13,7 @@ export function useFetchDogs(dogIds: string[]) {
   return useQuery({
     queryKey: ["dogs", "detail", { ids: dogIds }],
     queryFn: () => fetchDogs(dogIds),
-    enabled: !!dogIds,
+    enabled: !!dogIds && dogIds.length > 0,
   });
 }
 
@@ -20,6 +21,9 @@ export function useFetchBreeds() {
   return useQuery({
     queryKey: ["dogs", "breeds"],
     queryFn: fetchBreeds,
+    staleTime: 24 * 60 * 60 * 1000, // 24 hours - breeds rarely change
+    gcTime: 48 * 60 * 60 * 1000, // Keep in cache for 48 hours
+    refetchOnWindowFocus: false, // Breeds don't need real-time updates
   });
 }
 
@@ -30,6 +34,9 @@ export function useIdentifyMatch(
   return useQuery({
     queryKey: ["dogs", "match", { ids: dogIds }],
     queryFn: () => identifyMatch(dogIds),
+    staleTime: 0, // Data is immediately stale, will always refetch
+    gcTime: 0, // Remove from cache immediately after component unmounts
+    refetchOnMount: "always", // Always refetch when component mounts
     ...options,
   });
 }
