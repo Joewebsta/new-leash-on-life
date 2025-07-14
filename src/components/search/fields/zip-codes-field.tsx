@@ -6,10 +6,11 @@ import {
   FormLabel,
 } from "@/components/ui/form";
 import { Control } from "react-hook-form";
+import { z } from "zod";
+import { FormSchema } from "../filters-form";
 
 interface ZipCodesFieldProps {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  control: Control<any>;
+  control: Control<z.infer<typeof FormSchema>>;
 }
 
 export function ZipCodesField({ control }: ZipCodesFieldProps) {

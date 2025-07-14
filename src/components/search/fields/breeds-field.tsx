@@ -7,10 +7,11 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Control } from "react-hook-form";
+import { z } from "zod";
+import { FormSchema } from "../filters-form";
 
 interface BreedsFieldProps {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  control: Control<any>;
+  control: Control<z.infer<typeof FormSchema>>;
   breedOptions: Option[];
 }
 

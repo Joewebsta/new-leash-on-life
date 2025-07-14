@@ -22,7 +22,7 @@ const optionSchema = z.object({
   value: z.string(),
 });
 
-const FormSchema = z.object({
+export const FormSchema = z.object({
   breeds: z.array(optionSchema),
   ageRange: z.array(z.number()).length(2),
   zipCodes: z.array(optionSchema),
