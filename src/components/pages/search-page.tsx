@@ -1,4 +1,4 @@
-import { DogGrid } from "@/components/dog-grid";
+import { DogGrid } from "@/components/dogs/dog-grid";
 import { EmptyFavorites } from "@/components/empty-favorites";
 import { ErrorState } from "@/components/error-state";
 import { LoadingSkeleton } from "@/components/loading-skeleton";

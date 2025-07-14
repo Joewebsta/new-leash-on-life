@@ -1,4 +1,4 @@
-import { DogContent } from "@/components/dog-content";
+import { DogContent } from "@/components/dogs/dog-content";
 import { Dog } from "@/types/types";
 import { Heart } from "lucide-react";
 

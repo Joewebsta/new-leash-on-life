@@ -1,4 +1,4 @@
-import { DogSearchCard } from "@/components/dog-search-card";
+import { DogSearchCard } from "@/components/dogs/dog-search-card";
 import { Dog } from "@/types/types";
 
 interface DogGridProps {

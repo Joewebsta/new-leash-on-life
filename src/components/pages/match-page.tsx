@@ -1,4 +1,4 @@
-import { DogContent } from "@/components/dog-content";
+import { DogContent } from "@/components/dogs/dog-content";
 import { LoadingSpinner } from "@/components/loading-spinner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
