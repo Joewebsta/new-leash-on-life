@@ -1,7 +1,7 @@
 import Layout from "@/components/layout/layout";
-import { LoginForm } from "@/components/login-form";
+import { LoginPage } from "@/components/login-page";
 import MatchPage from "@/components/match-page";
-import NotFound from "@/components/not-found";
+import NotFoundPage from "@/components/not-found-page";
 import { SearchPage } from "@/components/search-page";
 import { Analytics } from "@vercel/analytics/react";
 import { Route, Routes } from "react-router";
@@ -13,8 +13,8 @@ function App() {
   return (
     <>
       <Routes>
-        <Route index element={<LoginForm />} />
-        <Route path="/login" element={<LoginForm />} />
+        <Route index element={<LoginPage />} />
+        <Route path="/login" element={<LoginPage />} />
         <Route element={<Layout />}>
           <Route
             path="/dogs/search"
@@ -35,7 +35,7 @@ function App() {
             }
           />
         </Route>
-        <Route path="*" element={<NotFound />} />
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
       <Analytics />
     </>

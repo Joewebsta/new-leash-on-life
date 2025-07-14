@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/form";
 import { usePerformLogin } from "@/services/authService";
 
-export function LoginForm({
+export function LoginPage({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
