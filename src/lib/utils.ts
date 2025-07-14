@@ -1,4 +1,5 @@
 import { FormSchema } from "@/components/search/filters-form";
+import { FILTERS_FORM_CONSTANTS } from "@/constants/constants";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { z } from "zod";
@@ -19,13 +20,7 @@ export const buildSearchParams = (data: z.infer<typeof FormSchema>) => {
 };
 
 export const getDefaultFormValues = (searchParams: URLSearchParams) => {
-  const CONSTANTS = {
-    DEFAULT_RESULTS_TOTAL: 10_000,
-    DEFAULT_AGE_MIN: 0,
-    DEFAULT_AGE_MAX: 14,
-    DEFAULT_SORT: "breed:asc" as const,
-    SEARCH_DEBOUNCE_MS: 300,
-  } as const;
+  const { DEFAULT_AGE_MIN, DEFAULT_AGE_MAX } = FILTERS_FORM_CONSTANTS;
 
   return {
     sort: searchParams.get("sort") as z.infer<typeof FormSchema>["sort"],
@@ -33,8 +28,8 @@ export const getDefaultFormValues = (searchParams: URLSearchParams) => {
       .getAll("breeds")
       .map((breed) => ({ value: breed, label: breed })),
     ageRange: [
-      Number(searchParams.get("ageMin")) || CONSTANTS.DEFAULT_AGE_MIN,
-      Number(searchParams.get("ageMax")) || CONSTANTS.DEFAULT_AGE_MAX,
+      Number(searchParams.get("ageMin")) || DEFAULT_AGE_MIN,
+      Number(searchParams.get("ageMax")) || DEFAULT_AGE_MAX,
     ],
     zipCodes: searchParams
       .getAll("zipCodes")

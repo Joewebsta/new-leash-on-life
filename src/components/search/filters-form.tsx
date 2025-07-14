@@ -1,4 +1,5 @@
 import { Option } from "@/components/ui/multiple-selector";
+import { FILTERS_FORM_CONSTANTS } from "@/constants/constants";
 import { buildSearchParams, cn, getDefaultFormValues } from "@/lib/utils";
 
 import { Form } from "@/components/ui/form";
@@ -16,14 +17,6 @@ import {
   ZipCodesField,
   FormActions,
 } from "./fields";
-
-const CONSTANTS = {
-  DEFAULT_RESULTS_TOTAL: 10_000,
-  DEFAULT_AGE_MIN: 0,
-  DEFAULT_AGE_MAX: 14,
-  DEFAULT_SORT: "breed:asc" as const,
-  SEARCH_DEBOUNCE_MS: 300,
-} as const;
 
 const optionSchema = z.object({
   label: z.string(),
@@ -58,7 +51,7 @@ export function FiltersForm({
 }: FiltersFormProps) {
   const [searchParams, setSearchParams] = useSearchParams();
   const [resultsTotal, setResultsTotal] = React.useState<number>(
-    CONSTANTS.DEFAULT_RESULTS_TOTAL
+    FILTERS_FORM_CONSTANTS.DEFAULT_RESULTS_TOTAL
   );
 
   const form = useForm<z.infer<typeof FormSchema>>({
@@ -92,13 +85,16 @@ export function FiltersForm({
   }
 
   const handleReset = () => {
+    const { DEFAULT_SORT, DEFAULT_AGE_MIN, DEFAULT_AGE_MAX } =
+      FILTERS_FORM_CONSTANTS;
+
     form.reset({
-      sort: CONSTANTS.DEFAULT_SORT,
+      sort: DEFAULT_SORT,
       breeds: [],
-      ageRange: [CONSTANTS.DEFAULT_AGE_MIN, CONSTANTS.DEFAULT_AGE_MAX],
+      ageRange: [DEFAULT_AGE_MIN, DEFAULT_AGE_MAX],
       zipCodes: [],
     });
-    setSearchParams(new URLSearchParams("?sort=breed:asc"));
+    setSearchParams(new URLSearchParams(`?sort=${DEFAULT_SORT}`));
   };
 
   return (
