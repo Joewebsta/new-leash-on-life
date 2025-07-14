@@ -1,8 +1,8 @@
 import Layout from "@/components/layout/layout";
 import { LoginForm } from "@/components/login-form";
-import MatchPage from "@/components/pages/match-page";
-import NotFound from "@/components/pages/not-found";
-import { SearchPage } from "@/components/pages/search-page";
+import MatchPage from "@/components/match-page";
+import NotFound from "@/components/not-found";
+import { SearchPage } from "@/components/search-page";
 import { Analytics } from "@vercel/analytics/react";
 import { Route, Routes } from "react-router";
 import { useSelectedDogs } from "./hooks/useSelectedDogs";
