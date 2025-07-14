@@ -25,7 +25,6 @@ export function usePerformLogout() {
 
   return useMutation({
     mutationFn: performLogout,
-    retry: 1,
     onSuccess() {
       queryClient.clear();
       navigate("/login");
