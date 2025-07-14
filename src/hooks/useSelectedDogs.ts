@@ -1,30 +1,39 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { Dog } from "@/types/types";
 
-const MAX_SELECTED_DOGS = 100;
-
 export function useSelectedDogs() {
+  const MAX_SELECTED_DOGS = 100;
+
   const [selectedDogs, setSelectedDogs] = useState<Set<Dog>>(new Set());
 
-  const handleUpdateSelectedDogs = (dog: Dog) => {
-    if (selectedDogs.size >= MAX_SELECTED_DOGS && !selectedDogs.has(dog)) {
-      return;
-    }
+  const toggleDog = useCallback(
+    (dog: Dog) => {
+      setSelectedDogs((prev) => {
+        if (prev.size >= MAX_SELECTED_DOGS && !prev.has(dog)) {
+          return prev; // No change, return same reference
+        }
 
-    if (selectedDogs.has(dog)) {
-      const newSet = new Set(selectedDogs);
-      newSet.delete(dog);
-      setSelectedDogs(newSet);
-    } else {
-      setSelectedDogs(new Set([...selectedDogs, dog]));
-    }
-  };
+        if (prev.has(dog)) {
+          const newSet = new Set(prev);
+          newSet.delete(dog);
+          return newSet;
+        } else {
+          const newSet = new Set(prev);
+          newSet.add(dog);
+          return newSet;
+        }
+      });
+    },
+    [MAX_SELECTED_DOGS]
+  );
 
-  const handleResetSelectedDogs = () => setSelectedDogs(new Set());
+  const resetSelectedDogs = useCallback(() => {
+    setSelectedDogs(new Set());
+  }, []);
 
   return {
-    selectedDogs,
-    handleUpdateSelectedDogs,
-    handleResetSelectedDogs,
+    selectedDogs: Array.from(selectedDogs),
+    toggleDog,
+    resetSelectedDogs,
   };
 }

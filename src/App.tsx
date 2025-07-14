@@ -8,8 +8,7 @@ import { Route, Routes } from "react-router";
 import { useSelectedDogs } from "./hooks/useSelectedDogs";
 
 function App() {
-  const { selectedDogs, handleUpdateSelectedDogs, handleResetSelectedDogs } =
-    useSelectedDogs();
+  const { selectedDogs, toggleDog, resetSelectedDogs } = useSelectedDogs();
 
   return (
     <>
@@ -22,7 +21,7 @@ function App() {
             element={
               <SearchPage
                 selectedDogs={Array.from(selectedDogs)}
-                onUpdateSelectedDogs={handleUpdateSelectedDogs}
+                onUpdateSelectedDogs={toggleDog}
               />
             }
           />
@@ -31,7 +30,7 @@ function App() {
             element={
               <MatchPage
                 selectedDogs={Array.from(selectedDogs)}
-                onResetSelectedDogs={handleResetSelectedDogs}
+                onResetSelectedDogs={resetSelectedDogs}
               />
             }
           />
