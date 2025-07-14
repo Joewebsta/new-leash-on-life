@@ -1,5 +1,5 @@
 import { Option } from "@/components/ui/multiple-selector";
-import { cn } from "@/lib/utils";
+import { buildSearchParams, cn, getDefaultFormValues } from "@/lib/utils";
 
 import { Form } from "@/components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -56,47 +56,17 @@ export function FiltersForm({
   breedOptions,
   onClose,
 }: FiltersFormProps) {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [resultsTotal, setResultsTotal] = React.useState<number>(
     CONSTANTS.DEFAULT_RESULTS_TOTAL
-  );
-  const [searchParams, setSearchParams] = useSearchParams();
-
-  const defaultValues = React.useMemo(
-    () => ({
-      sort: searchParams.get("sort") as z.infer<typeof FormSchema>["sort"],
-      breeds: searchParams
-        .getAll("breeds")
-        .map((breed) => ({ value: breed, label: breed })),
-      ageRange: [
-        Number(searchParams.get("ageMin")) || CONSTANTS.DEFAULT_AGE_MIN,
-        Number(searchParams.get("ageMax")) || CONSTANTS.DEFAULT_AGE_MAX,
-      ],
-      zipCodes: searchParams
-        .getAll("zipCodes")
-        .map((zipCode) => ({ value: zipCode, label: zipCode })),
-    }),
-    [searchParams]
   );
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
-    defaultValues,
+    defaultValues: getDefaultFormValues(searchParams),
   });
 
   const formValues = form.watch();
-
-  const buildSearchParams = (data: z.infer<typeof FormSchema>) => {
-    const params = new URLSearchParams();
-
-    if (data.sort) params.append("sort", data.sort);
-    data.breeds.forEach((breed) => params.append("breeds", breed.value));
-    data.zipCodes.forEach((zipCode) =>
-      params.append("zipCodes", zipCode.value)
-    );
-    params.append("ageMin", data.ageRange[0].toString());
-    params.append("ageMax", data.ageRange[1].toString());
-    return params;
-  };
 
   const searchParamsString = React.useMemo(
     () => buildSearchParams(formValues).toString(),
