@@ -1,4 +1,4 @@
-import { MobileMatchButton } from "@/components/mobile-match-button";
+import { MobileMatchButton } from "@/components/layout/mobile-match-button";
 import { SearchHeader } from "@/components/search/search-header";
 import { Dog, ViewMode } from "@/types/types";
 import { ReactNode } from "react";

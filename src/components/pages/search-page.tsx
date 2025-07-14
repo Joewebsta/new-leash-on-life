@@ -1,7 +1,7 @@
 import { DogGrid } from "@/components/dogs/dog-grid";
-import { EmptyFavorites } from "@/components/empty-favorites";
-import { ErrorState } from "@/components/error-state";
-import { LoadingSkeleton } from "@/components/loading-skeleton";
+import { EmptyFavorites } from "@/components/states/empty-favorites";
+import { ErrorState } from "@/components/states/error-state";
+import { LoadingSkeleton } from "@/components/states/loading-skeleton";
 import { SearchPageLayout } from "@/components/search/search-page-layout";
 import { SearchPagination } from "@/components/search/search-pagination";
 import { useSearchPageData } from "@/hooks/useSearchPageData";

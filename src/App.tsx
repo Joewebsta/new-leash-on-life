@@ -1,4 +1,4 @@
-import Layout from "@/components/layout";
+import Layout from "@/components/layout/layout";
 import { LoginForm } from "@/components/login-form";
 import MatchPage from "@/components/pages/match-page";
 import NotFound from "@/components/pages/not-found";

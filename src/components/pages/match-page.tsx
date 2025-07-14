@@ -1,5 +1,5 @@
 import { DogContent } from "@/components/dogs/dog-content";
-import { LoadingSpinner } from "@/components/loading-spinner";
+import { LoadingSpinner } from "@/components/states/loading-spinner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useIdentifyMatch } from "@/services/dogService";
