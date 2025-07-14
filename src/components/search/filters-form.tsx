@@ -1,17 +1,7 @@
-import MultipleSelector, { Option } from "@/components/ui/multiple-selector";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Option } from "@/components/ui/multiple-selector";
 import { cn } from "@/lib/utils";
 
-import { Button } from "@/components/ui/button";
-import { DualRangeSlider } from "@/components/ui/dual-range-slider";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+import { Form } from "@/components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as React from "react";
 import { useForm } from "react-hook-form";
@@ -19,7 +9,13 @@ import * as z from "zod";
 
 import { useSearchDogs } from "@/services/dogService";
 import { useSearchParams } from "react-router";
-import PulseLoader from "react-spinners/PulseLoader";
+import {
+  SortByField,
+  BreedsField,
+  AgeRangeField,
+  ZipCodesField,
+  FormActions,
+} from "./fields";
 
 const optionSchema = z.object({
   label: z.string(),
@@ -122,14 +118,6 @@ export function FiltersForm({
     setSearchParams(new URLSearchParams("?sort=breed:asc"));
   };
 
-  const renderPrimaryButtonText = (resultsTotal: number) => {
-    if (resultsTotal === 0) return "No dogs found";
-    if (resultsTotal > 1000) return "Show 1000+ dogs";
-    return `Show ${resultsTotal.toLocaleString()} dog${
-      resultsTotal === 1 ? "" : "s"
-    }`;
-  };
-
   return (
     <div className={cn("pb-[98px] px-4 md:px-0", className)}>
       {isSearchError && (
@@ -141,153 +129,15 @@ export function FiltersForm({
       )}
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-          <FormField
-            control={form.control}
-            name="sort"
-            render={({ field }) => (
-              <FormItem className="space-y-3">
-                <FormLabel>Sort By</FormLabel>
-                <FormControl>
-                  <RadioGroup
-                    onValueChange={field.onChange}
-                    value={field.value || undefined}
-                    className="flex flex-col space-y-1"
-                    tabIndex={0}
-                  >
-                    <FormItem className="flex items-center space-x-3 space-y-0">
-                      <FormControl>
-                        <RadioGroupItem value="breed:asc" />
-                      </FormControl>
-                      <FormLabel className="font-normal">
-                        Breed: A - Z
-                      </FormLabel>
-                    </FormItem>
-                    <FormItem className="flex items-center space-x-3 space-y-0">
-                      <FormControl>
-                        <RadioGroupItem value="breed:desc" />
-                      </FormControl>
-                      <FormLabel className="font-normal">
-                        Breed: Z - A
-                      </FormLabel>
-                    </FormItem>
-                    <FormItem className="flex items-center space-x-3 space-y-0">
-                      <FormControl>
-                        <RadioGroupItem value="name:asc" />
-                      </FormControl>
-                      <FormLabel className="font-normal">Name: A - Z</FormLabel>
-                    </FormItem>
-                    <FormItem className="flex items-center space-x-3 space-y-0">
-                      <FormControl>
-                        <RadioGroupItem value="name:desc" />
-                      </FormControl>
-                      <FormLabel className="font-normal">Name: Z - A</FormLabel>
-                    </FormItem>
-                    <FormItem className="flex items-center space-x-3 space-y-0">
-                      <FormControl>
-                        <RadioGroupItem value="age:asc" />
-                      </FormControl>
-                      <FormLabel className="font-normal">
-                        Age: Low - High
-                      </FormLabel>
-                    </FormItem>
-                    <FormItem className="flex items-center space-x-3 space-y-0">
-                      <FormControl>
-                        <RadioGroupItem value="age:desc" />
-                      </FormControl>
-                      <FormLabel className="font-normal">
-                        Age: High - Low
-                      </FormLabel>
-                    </FormItem>
-                  </RadioGroup>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
+          <SortByField control={form.control} />
+          <BreedsField control={form.control} breedOptions={breedOptions} />
+          <AgeRangeField control={form.control} />
+          <ZipCodesField control={form.control} />
+          <FormActions
+            onReset={handleReset}
+            isLoading={isLoadingSearchData}
+            resultsTotal={resultsTotal}
           />
-          <FormField
-            control={form.control}
-            name="breeds"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Breeds</FormLabel>
-                <FormControl>
-                  <MultipleSelector
-                    {...field}
-                    defaultOptions={breedOptions}
-                    placeholder="Select one or more breeds"
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="ageRange"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Age Range</FormLabel>
-                <FormControl>
-                  <div className="h-6">
-                    <DualRangeSlider
-                      labelPosition="bottom"
-                      label={(value) => <span>{value}</span>}
-                      value={field.value}
-                      onValueChange={field.onChange}
-                      min={0}
-                      max={14}
-                      step={1}
-                    />
-                  </div>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="zipCodes"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Zipcodes</FormLabel>
-                <FormControl>
-                  <MultipleSelector
-                    {...field}
-                    defaultOptions={[]}
-                    creatable
-                    placeholder="Select one or more zip codes"
-                  />
-                </FormControl>
-              </FormItem>
-            )}
-          />
-          <div className="fixed flex gap-2 bottom-0 inset-x-0 p-4 bg-white border-t border-neutral-200 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)]">
-            <Button
-              className="w-1/2"
-              variant="secondary"
-              type="button"
-              onClick={handleReset}
-            >
-              Reset
-            </Button>
-            <Button
-              className="w-1/2"
-              type="submit"
-              disabled={resultsTotal === 0}
-            >
-              {isLoadingSearchData ? (
-                <PulseLoader
-                  color="white"
-                  loading={isLoadingSearchData}
-                  size={8}
-                  aria-label="Loading Spinner"
-                  data-testid="loader"
-                />
-              ) : (
-                renderPrimaryButtonText(resultsTotal)
-              )}
-            </Button>
-          </div>
         </form>
       </Form>
     </div>
