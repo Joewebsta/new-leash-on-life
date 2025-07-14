@@ -17,6 +17,14 @@ import {
   FormActions,
 } from "./fields";
 
+const CONSTANTS = {
+  DEFAULT_RESULTS_TOTAL: 10_000,
+  DEFAULT_AGE_MIN: 0,
+  DEFAULT_AGE_MAX: 14,
+  DEFAULT_SORT: "breed:asc" as const,
+  SEARCH_DEBOUNCE_MS: 300,
+} as const;
+
 const optionSchema = z.object({
   label: z.string(),
   value: z.string(),
@@ -48,7 +56,9 @@ export function FiltersForm({
   breedOptions,
   onClose,
 }: FiltersFormProps) {
-  const [resultsTotal, setResultsTotal] = React.useState(10_000);
+  const [resultsTotal, setResultsTotal] = React.useState<number>(
+    CONSTANTS.DEFAULT_RESULTS_TOTAL
+  );
   const [searchParams, setSearchParams] = useSearchParams();
 
   const defaultValues = React.useMemo(
@@ -58,8 +68,8 @@ export function FiltersForm({
         .getAll("breeds")
         .map((breed) => ({ value: breed, label: breed })),
       ageRange: [
-        Number(searchParams.get("ageMin")) || 0,
-        Number(searchParams.get("ageMax")) || 14,
+        Number(searchParams.get("ageMin")) || CONSTANTS.DEFAULT_AGE_MIN,
+        Number(searchParams.get("ageMax")) || CONSTANTS.DEFAULT_AGE_MAX,
       ],
       zipCodes: searchParams
         .getAll("zipCodes")
@@ -113,9 +123,9 @@ export function FiltersForm({
 
   const handleReset = () => {
     form.reset({
-      sort: "breed:asc",
+      sort: CONSTANTS.DEFAULT_SORT,
       breeds: [],
-      ageRange: [0, 14],
+      ageRange: [CONSTANTS.DEFAULT_AGE_MIN, CONSTANTS.DEFAULT_AGE_MAX],
       zipCodes: [],
     });
     setSearchParams(new URLSearchParams("?sort=breed:asc"));
