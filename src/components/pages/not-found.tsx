@@ -13,7 +13,7 @@ const NotFound = () => {
       </p>
 
       <Link to="/dogs/search?sort=breed:asc">
-        <Button>Search for dogs </Button>
+        <Button>Browse All Dogs</Button>
       </Link>
     </div>
   );
