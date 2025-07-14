@@ -3,30 +3,13 @@ import { LoginForm } from "@/components/login-form";
 import MatchPage from "@/components/match-page";
 import NotFound from "@/components/not-found";
 import { SearchPage } from "@/components/search-page";
-import { Dog } from "@/types/types";
 import { Analytics } from "@vercel/analytics/react";
-import { useState } from "react";
 import { Route, Routes } from "react-router";
-
-const MAX_SELECTED_DOGS = 100;
+import { useSelectedDogs } from "./hooks/useSelectedDogs";
 
 function App() {
-  const [selectedDogs, setSelectedDogs] = useState<Set<Dog>>(new Set());
-
-  const handleUpdateSelectedDogs = (dog: Dog) => {
-    if (selectedDogs.size >= MAX_SELECTED_DOGS && !selectedDogs.has(dog))
-      return;
-
-    if (selectedDogs.has(dog)) {
-      const newSet = new Set(selectedDogs);
-      newSet.delete(dog);
-      setSelectedDogs(newSet);
-    } else {
-      setSelectedDogs(new Set([...selectedDogs, dog]));
-    }
-  };
-
-  const handleResetSelectedDogs = () => setSelectedDogs(new Set());
+  const { selectedDogs, handleUpdateSelectedDogs, handleResetSelectedDogs } =
+    useSelectedDogs();
 
   return (
     <>
