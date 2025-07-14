@@ -88,7 +88,10 @@ export function FiltersForm({
     return params;
   };
 
-  const searchParamsString = buildSearchParams(formValues).toString();
+  const searchParamsString = React.useMemo(
+    () => buildSearchParams(formValues).toString(),
+    [formValues]
+  );
 
   const {
     isPending: isLoadingSearchData,
