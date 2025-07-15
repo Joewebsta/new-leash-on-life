@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import * as React from "react";
+import { motion } from "motion/react";
 
 import {
   Dialog,
@@ -30,14 +31,23 @@ export function DrawerDialog({ breeds }: { breeds: string[] }) {
     [breeds]
   );
 
+  const fadeAnimation = {
+    initial: { opacity: 0 },
+    animate: { opacity: 1 },
+    exit: { opacity: 0 },
+    transition: { duration: 0.2 },
+  };
+
   if (isDesktop) {
     return (
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogTrigger asChild>
-          <Button variant="outline">
-            <Settings2 /> Filters
-          </Button>
-        </DialogTrigger>
+        <motion.div {...fadeAnimation}>
+          <DialogTrigger asChild>
+            <Button variant="outline">
+              <Settings2 /> Filters
+            </Button>
+          </DialogTrigger>
+        </motion.div>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
             <DialogTitle>Filters</DialogTitle>
@@ -54,11 +64,13 @@ export function DrawerDialog({ breeds }: { breeds: string[] }) {
 
   return (
     <Drawer open={open} onOpenChange={setOpen}>
-      <DrawerTrigger asChild>
-        <Button variant="outline">
-          <Settings2 /> Filters
-        </Button>
-      </DrawerTrigger>
+      <motion.div {...fadeAnimation}>
+        <DrawerTrigger asChild>
+          <Button variant="outline">
+            <Settings2 /> Filters
+          </Button>
+        </DrawerTrigger>
+      </motion.div>
       <DrawerContent className="max-h-[100%]">
         <div className="overflow-scroll">
           <DrawerHeader className="text-left">

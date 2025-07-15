@@ -3,6 +3,7 @@ import { DrawerDialog } from "@/components/ui/drawer-dialogue";
 import { Dog, ViewMode } from "@/types/types";
 import { SearchIcon } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { AnimatePresence } from "motion/react";
 
 interface SearchHeaderProps {
   breeds: string[];
@@ -33,7 +34,6 @@ export function SearchHeader({
       </Tabs>
 
       <div className="flex gap-3">
-        {activeTab === "browse-all" && <DrawerDialog breeds={breeds} />}
         {selectedDogs.length > 0 && (
           <Button
             onClick={onNavigateToMatch}
@@ -44,6 +44,11 @@ export function SearchHeader({
             Find your pawfect match
           </Button>
         )}
+        <AnimatePresence mode="wait">
+          {activeTab === "browse-all" && (
+            <DrawerDialog key="filters-button" breeds={breeds} />
+          )}
+        </AnimatePresence>
       </div>
     </div>
   );
