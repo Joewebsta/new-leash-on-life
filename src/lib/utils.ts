@@ -33,6 +33,9 @@ export const getDefaultFormValues = (searchParams: URLSearchParams) => {
       Number(searchParams.get("ageMin")) || DEFAULT_AGE_MIN,
       Number(searchParams.get("ageMax")) || DEFAULT_AGE_MAX,
     ],
+    location: searchParams
+      .getAll("location")
+      .map((location) => ({ value: location, label: location })),
     zipCodes: searchParams
       .getAll("zipCodes")
       .map((zipCode) => ({ value: zipCode, label: zipCode })),

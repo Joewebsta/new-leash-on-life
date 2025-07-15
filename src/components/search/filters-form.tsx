@@ -22,6 +22,8 @@ import {
   useSearchLocationsQuery,
 } from "@/services/locationService";
 import { useEffect } from "react";
+import { LocationField } from "@/components/search/fields/location-field";
+import { zipCodesSchema } from "@/schemas/schema";
 
 const optionSchema = z.object({
   label: z.string(),
@@ -42,6 +44,7 @@ export const FormSchema = z.object({
       "age:desc",
     ])
     .nullable(),
+  location: z.array(optionSchema),
 });
 
 interface FiltersFormProps extends React.ComponentProps<"form"> {
@@ -113,18 +116,29 @@ export function FiltersForm({
     // Save to locationStore - {{city: "New York", states: ["NY"]}: ["10001", "10002", "10003"]}
     //
 
+    console.log("data", JSON.parse(data.location[0].value));
+
+    // TODO: Create type for SelectedLocation
+    const selectedLocation = JSON.parse(data.location[0].value);
+
     searchLocationsMutation(
       {
-        // city: "New York",
-        states: ["CA"],
+        city: selectedLocation.city,
+        states: [selectedLocation.states],
         size: 20,
       },
       {
         onSuccess: (locationData) => {
           // Transform locationData to zipCodes array
-          const zipCodes = locationData.results.map(
+          let zipCodes = locationData.results.map(
             (location) => location.zip_code
           );
+
+          if (selectedLocation.zipCode) {
+            zipCodes = zipCodes.filter((zipCode) => {
+              return zipCode === selectedLocation.zipCode;
+            });
+          }
 
           // Create data object with zipCodes
           const dataWithZipCodes = { ...data, zipCodes };
@@ -173,6 +187,7 @@ export function FiltersForm({
           <BreedsField control={form.control} breedOptions={breedOptions} />
           <AgeRangeField control={form.control} />
           {/* <ZipCodesField control={form.control} /> */}
+          <LocationField control={form.control} />
           <FormActions
             onReset={handleReset}
             // isLoading={isLoadingSearchData || isLoadingSearchLocations}
