@@ -3,7 +3,7 @@ import { DrawerDialog } from "@/components/ui/drawer-dialogue";
 import { Dog, ViewMode } from "@/types/types";
 import { SearchIcon } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { AnimatePresence } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
 
 interface SearchHeaderProps {
   breeds: string[];
@@ -39,16 +39,26 @@ export function SearchHeader({
             <DrawerDialog key="filters-button" breeds={breeds} />
           )}
         </AnimatePresence>
-        {selectedDogs.length > 0 && (
+        <motion.div
+          animate={{
+            width: selectedDogs.length > 0 ? 220 : 0,
+            opacity: selectedDogs.length > 0 ? 1 : 0,
+          }}
+          transition={{ duration: 0.2, ease: "easeOut" }}
+          style={{
+            overflow: "hidden",
+            whiteSpace: "nowrap",
+          }}
+        >
           <Button
             onClick={onNavigateToMatch}
             disabled={selectedDogs.length === 0}
-            className="hidden sm:inline-flex"
+            className="hidden sm:inline-flex w-full"
           >
             <SearchIcon />
             Find your pawfect match
           </Button>
-        )}
+        </motion.div>
       </div>
     </div>
   );
