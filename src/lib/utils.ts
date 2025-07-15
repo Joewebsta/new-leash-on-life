@@ -13,7 +13,8 @@ export const buildSearchParams = (data: z.infer<typeof FormSchema>) => {
 
   if (data.sort) params.append("sort", data.sort);
   data.breeds.forEach((breed) => params.append("breeds", breed.value));
-  data.zipCodes.forEach((zipCode) => params.append("zipCodes", zipCode.value));
+  // data.zipCodes.forEach((zipCode) => params.append("zipCodes", zipCode.value));
+  data.zipCodes.forEach((zipCode) => params.append("zipCodes", zipCode));
   params.append("ageMin", data.ageRange[0].toString());
   params.append("ageMax", data.ageRange[1].toString());
   return params;

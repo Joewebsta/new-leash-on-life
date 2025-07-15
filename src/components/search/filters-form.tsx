@@ -17,6 +17,11 @@ import {
   ZipCodesField,
   FormActions,
 } from "./fields";
+import {
+  useSearchLocationsMutation,
+  useSearchLocationsQuery,
+} from "@/services/locationService";
+import { useEffect } from "react";
 
 const optionSchema = z.object({
   label: z.string(),
@@ -54,34 +59,76 @@ export function FiltersForm({
     FILTERS_FORM_CONSTANTS.DEFAULT_RESULTS_TOTAL
   );
 
+  const {
+    mutate: searchLocationsMutation,
+    isPending: isLoadingSearchLocations,
+  } = useSearchLocationsMutation();
+
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: getDefaultFormValues(searchParams),
   });
 
   const formValues = form.watch();
+  console.log("formValues", formValues);
 
   const searchParamsString = React.useMemo(
     () => buildSearchParams(formValues).toString(),
     [formValues]
   );
 
+  const { data: locationData } = useSearchLocationsQuery({
+    city: "New York",
+    states: ["NY"],
+    size: 25,
+  });
+
+  const zipCodes = locationData?.results.map((location) => location.zip_code);
+  const searchParams2 = new URLSearchParams(searchParamsString);
+  searchParams2.delete("zipCodes");
+  zipCodes?.forEach((zipCode) => searchParams2.append("zipCodes", zipCode));
+
+  console.log("searchParams", searchParams2.toString());
+
+  // STOPPED HERE
+  // Zipcodes for preview and zipcodes for actual filter need to match.
+
   const {
     isPending: isLoadingSearchData,
     isError: isSearchError,
     data: searchData,
-  } = useSearchDogs(searchParamsString);
+    // } = useSearchDogs(searchParamsString);
+  } = useSearchDogs(searchParams2.toString());
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (searchData?.total !== undefined) {
       setResultsTotal(searchData.total);
     }
   }, [searchData?.total]);
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
-    const params = buildSearchParams(data);
-    setSearchParams(params);
-    onClose();
+    searchLocationsMutation(
+      {
+        city: "New York",
+        states: ["NY"],
+      },
+      {
+        onSuccess: (locationData) => {
+          const zipCodes = locationData.results.map(
+            (location) => location.zip_code
+          );
+
+          data.zipCodes = zipCodes;
+          const params = buildSearchParams(data);
+          setSearchParams(params);
+          onClose();
+        },
+        onError: (error) => {
+          // TODO: PROPER ERROR HANDLING
+          console.error("error - location data", error);
+        },
+      }
+    );
   }
 
   const handleReset = () => {
@@ -114,7 +161,7 @@ export function FiltersForm({
           <ZipCodesField control={form.control} />
           <FormActions
             onReset={handleReset}
-            isLoading={isLoadingSearchData}
+            isLoading={isLoadingSearchData || isLoadingSearchLocations}
             resultsTotal={resultsTotal}
           />
         </form>
