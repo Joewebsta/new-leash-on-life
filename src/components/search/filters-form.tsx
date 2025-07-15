@@ -31,7 +31,7 @@ const optionSchema = z.object({
 export const FormSchema = z.object({
   breeds: z.array(optionSchema),
   ageRange: z.array(z.number()).length(2),
-  zipCodes: z.array(optionSchema),
+  // zipCodes: z.array(optionSchema),
   sort: z
     .enum([
       "name:asc",
@@ -69,58 +69,73 @@ export function FiltersForm({
     defaultValues: getDefaultFormValues(searchParams),
   });
 
-  const formValues = form.watch();
-  console.log("formValues", formValues);
+  // const formValues = form.watch();
+  // console.log("formValues", formValues);
 
-  const searchParamsString = React.useMemo(
-    () => buildSearchParams(formValues).toString(),
-    [formValues]
-  );
+  // const searchParamsString = React.useMemo(
+  //   () => buildSearchParams(formValues).toString(),
+  //   [formValues]
+  // );
 
-  const { data: locationData } = useSearchLocationsQuery({
-    city: "New York",
-    states: ["NY"],
-    size: 25,
-  });
+  // const { data: locationData } = useSearchLocationsQuery({
+  //   city: "New York",
+  //   states: ["NY"],
+  //   size: 25,
+  // });
 
-  const zipCodes = locationData?.results.map((location) => location.zip_code);
-  const searchParams2 = new URLSearchParams(searchParamsString);
-  searchParams2.delete("zipCodes");
-  zipCodes?.forEach((zipCode) => searchParams2.append("zipCodes", zipCode));
+  // const zipCodes = locationData?.results.map((location) => location.zip_code);
+  // const searchParams2 = new URLSearchParams(searchParamsString);
+  // searchParams2.delete("zipCodes");
+  // zipCodes?.forEach((zipCode) => searchParams2.append("zipCodes", zipCode));
 
-  console.log("searchParams", searchParams2.toString());
+  // console.log("searchParams", searchParams2.toString());
 
   // STOPPED HERE
   // Zipcodes for preview and zipcodes for actual filter need to match.
 
-  const {
-    isPending: isLoadingSearchData,
-    isError: isSearchError,
-    data: searchData,
-    // } = useSearchDogs(searchParamsString);
-  } = useSearchDogs(searchParams2.toString());
+  // const {
+  //   isPending: isLoadingSearchData,
+  //   isError: isSearchError,
+  //   data: searchData,
+  //   // } = useSearchDogs(searchParamsString);
+  // } = useSearchDogs(searchParams2.toString());
 
-  useEffect(() => {
-    if (searchData?.total !== undefined) {
-      setResultsTotal(searchData.total);
-    }
-  }, [searchData?.total]);
+  // useEffect(() => {
+  //   if (searchData?.total !== undefined) {
+  //     setResultsTotal(searchData.total);
+  //   }
+  // }, [searchData?.total]);
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
+    // Capture selected location e.g. New York, NY, US (from form "data" object)
+    // Make request to retrieve zip codes (mutation) - {city: "New York", states: ["NY"]} - returns Location object
+    // Create array of zip codes from Location objects (locationData.results.map((location) => location.zip_code))
+    // Save to locationStore - {{city: "New York", states: ["NY"]}: ["10001", "10002", "10003"]}
+    //
+
     searchLocationsMutation(
       {
-        city: "New York",
-        states: ["NY"],
+        // city: "New York",
+        states: ["CA"],
+        size: 20,
       },
       {
         onSuccess: (locationData) => {
+          // Transform locationData to zipCodes array
           const zipCodes = locationData.results.map(
             (location) => location.zip_code
           );
 
-          data.zipCodes = zipCodes;
-          const params = buildSearchParams(data);
-          setSearchParams(params);
+          // Create data object with zipCodes
+          const dataWithZipCodes = { ...data, zipCodes };
+
+          // Build search params
+          const searchParams = buildSearchParams(dataWithZipCodes);
+
+          // Set search params
+          setSearchParams(searchParams);
+
+          // Close form
           onClose();
         },
         onError: (error) => {
@@ -139,29 +154,29 @@ export function FiltersForm({
       sort: DEFAULT_SORT,
       breeds: [],
       ageRange: [DEFAULT_AGE_MIN, DEFAULT_AGE_MAX],
-      zipCodes: [],
     });
     setSearchParams(new URLSearchParams(`?sort=${DEFAULT_SORT}`));
   };
 
   return (
     <div className={cn("pb-[98px] px-4 md:px-0", className)}>
-      {isSearchError && (
+      {/* {isSearchError && (
         <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-md">
           <p className="text-red-600 text-sm">
             There was an error loading the search results. Please try again.
           </p>
         </div>
-      )}
+      )} */}
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           <SortByField control={form.control} />
           <BreedsField control={form.control} breedOptions={breedOptions} />
           <AgeRangeField control={form.control} />
-          <ZipCodesField control={form.control} />
+          {/* <ZipCodesField control={form.control} /> */}
           <FormActions
             onReset={handleReset}
-            isLoading={isLoadingSearchData || isLoadingSearchLocations}
+            // isLoading={isLoadingSearchData || isLoadingSearchLocations}
+            isLoading={isLoadingSearchLocations}
             resultsTotal={resultsTotal}
           />
         </form>
