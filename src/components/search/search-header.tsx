@@ -34,6 +34,11 @@ export function SearchHeader({
       </Tabs>
 
       <div className="flex gap-3">
+        <AnimatePresence mode="wait">
+          {activeTab === "browse-all" && (
+            <DrawerDialog key="filters-button" breeds={breeds} />
+          )}
+        </AnimatePresence>
         {selectedDogs.length > 0 && (
           <Button
             onClick={onNavigateToMatch}
@@ -44,11 +49,6 @@ export function SearchHeader({
             Find your pawfect match
           </Button>
         )}
-        <AnimatePresence mode="wait">
-          {activeTab === "browse-all" && (
-            <DrawerDialog key="filters-button" breeds={breeds} />
-          )}
-        </AnimatePresence>
       </div>
     </div>
   );
