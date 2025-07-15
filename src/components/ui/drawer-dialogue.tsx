@@ -64,12 +64,13 @@ export function DrawerDialog({ breeds }: { breeds: string[] }) {
 
   return (
     <Drawer open={open} onOpenChange={setOpen}>
-      <DrawerTrigger asChild>
-        <Button variant="outline">
-          <Settings2 /> Filters
-        </Button>
-      </DrawerTrigger>
-
+      <motion.div {...fadeAnimation}>
+        <DrawerTrigger asChild>
+          <Button variant="outline">
+            <Settings2 /> Filters
+          </Button>
+        </DrawerTrigger>
+      </motion.div>
       <DrawerContent className="max-h-[100%]">
         <div className="overflow-scroll">
           <DrawerHeader className="text-left">
