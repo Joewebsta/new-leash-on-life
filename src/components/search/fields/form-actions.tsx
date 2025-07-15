@@ -21,7 +21,7 @@ export function FormActions({
   };
 
   return (
-    <div className="fixed flex gap-2 bottom-0 inset-x-0 p-4 bg-white border-t border-neutral-200 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)]">
+    <div className="fixed flex gap-2 rounded-md bottom-0 inset-x-0 p-4 bg-white border-t border-neutral-200 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)]">
       <Button
         className="w-1/2"
         variant="secondary"
