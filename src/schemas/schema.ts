@@ -7,3 +7,8 @@ export const loginFormSchema = z.object({
     .email({ message: "Invalid email address" })
     .min(5, { message: "Must be 5 or more characters long" }),
 });
+
+export const zipCodesSchema = z
+  .array(z.string())
+  .min(1, "At least one zip code is required")
+  .max(100, "Maximum of 100 zip codes allowed");
