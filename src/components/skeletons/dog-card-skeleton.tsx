@@ -23,7 +23,7 @@ export function DogCardSkeleton() {
         {/* Location row skeleton */}
         <div className="flex gap-1 items-center">
           <Skeleton className="w-5 h-5 rounded-sm" />
-          <Skeleton className="h-5 w-24" />
+          <Skeleton className="h-5 w-32" />
         </div>
       </div>
     </div>
