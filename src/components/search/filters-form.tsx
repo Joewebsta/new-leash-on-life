@@ -6,38 +6,17 @@ import { Form } from "@/components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as React from "react";
 import { useForm } from "react-hook-form";
-import * as z from "zod";
 
+import { FiltersFormData, FiltersFormSchema } from "@/schemas/filters";
 import { useSearchDogs } from "@/services/dogService";
 import { useSearchParams } from "react-router";
 import {
-  SortByField,
-  BreedsField,
   AgeRangeField,
-  ZipCodesField,
+  BreedsField,
   FormActions,
+  SortByField,
+  ZipCodesField,
 } from "./fields";
-
-const optionSchema = z.object({
-  label: z.string(),
-  value: z.string(),
-});
-
-export const FormSchema = z.object({
-  breeds: z.array(optionSchema),
-  ageRange: z.array(z.number()).length(2),
-  zipCodes: z.array(optionSchema),
-  sort: z
-    .enum([
-      "name:asc",
-      "name:desc",
-      "breed:asc",
-      "breed:desc",
-      "age:asc",
-      "age:desc",
-    ])
-    .nullable(),
-});
 
 interface FiltersFormProps extends React.ComponentProps<"form"> {
   breedOptions: Option[];
@@ -54,8 +33,8 @@ export function FiltersForm({
     FILTERS_FORM_CONSTANTS.DEFAULT_RESULTS_TOTAL
   );
 
-  const form = useForm<z.infer<typeof FormSchema>>({
-    resolver: zodResolver(FormSchema),
+  const form = useForm<FiltersFormData>({
+    resolver: zodResolver(FiltersFormSchema),
     defaultValues: getDefaultFormValues(searchParams),
   });
 
@@ -78,7 +57,7 @@ export function FiltersForm({
     }
   }, [searchData?.total]);
 
-  function onSubmit(data: z.infer<typeof FormSchema>) {
+  function onSubmit(data: FiltersFormData) {
     const params = buildSearchParams(data);
     setSearchParams(params);
     onClose();
