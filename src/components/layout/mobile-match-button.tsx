@@ -19,7 +19,7 @@ export function MobileMatchButton({
           initial={{ y: "100%" }}
           animate={{ y: 0 }}
           exit={{ y: "100%" }}
-          transition={{ duration: 0.15, ease: "easeInOut" }}
+          transition={{ duration: 0.15, ease: "easeOut" }}
           className="fixed sm:hidden bottom-0 inset-x-0 p-6 bg-white border-t border-neutral-200 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] z-20"
         >
           <Button
