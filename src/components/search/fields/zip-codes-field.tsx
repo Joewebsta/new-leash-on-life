@@ -6,11 +6,10 @@ import {
   FormLabel,
 } from "@/components/ui/form";
 import { Control } from "react-hook-form";
-import { z } from "zod";
-import { FormSchema } from "../filters-form";
+import { FiltersFormData } from "@/schemas/filters";
 
 interface ZipCodesFieldProps {
-  control: Control<z.infer<typeof FormSchema>>;
+  control: Control<FiltersFormData>;
 }
 
 export function ZipCodesField({ control }: ZipCodesFieldProps) {

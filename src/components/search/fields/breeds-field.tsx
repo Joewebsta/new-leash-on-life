@@ -7,11 +7,10 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Control } from "react-hook-form";
-import { z } from "zod";
-import { FormSchema } from "../filters-form";
+import { FiltersFormData } from "@/schemas/filters";
 
 interface BreedsFieldProps {
-  control: Control<z.infer<typeof FormSchema>>;
+  control: Control<FiltersFormData>;
   breedOptions: Option[];
 }
 
