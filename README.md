@@ -6,7 +6,9 @@ A web application for browsing and matching with adoptable dogs.
 
 <a href="https://new-leash-on-life.vercel.app" target="_blank" rel="noopener noreferrer">🌐 Visit A New Leash on Life</a>
 
-Note: Any name/email login combination will work.
+**Demo Authentication**
+- Use any name and email combination to log in (no account creation required)
+- Sessions expire after one hour for security - simply log in again if needed
 
 ## Screenshot
 
