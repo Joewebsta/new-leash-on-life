@@ -41,7 +41,10 @@ export function DrawerDialog({ breeds }: { breeds: string[] }) {
   if (isDesktop) {
     return (
       <Dialog open={open} onOpenChange={setOpen}>
-        <motion.div {...fadeAnimation}>
+        <motion.div
+          {...fadeAnimation}
+          style={{ display: "inline-block", margin: 0, padding: 0 }}
+        >
           <DialogTrigger asChild>
             <Button variant="outline">
               <Settings2 /> Filters
@@ -64,7 +67,10 @@ export function DrawerDialog({ breeds }: { breeds: string[] }) {
 
   return (
     <Drawer open={open} onOpenChange={setOpen}>
-      <motion.div {...fadeAnimation}>
+      <motion.div
+        {...fadeAnimation}
+        style={{ display: "inline-block", margin: 0, padding: 0 }}
+      >
         <DrawerTrigger asChild>
           <Button variant="outline">
             <Settings2 /> Filters

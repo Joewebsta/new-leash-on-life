@@ -4,7 +4,6 @@ import { Dog, ViewMode } from "@/types/types";
 import { SearchIcon } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AnimatePresence, motion } from "motion/react";
-import { useMediaQuery } from "@/hooks/useMediaQuery";
 
 interface SearchHeaderProps {
   breeds: string[];
@@ -21,8 +20,6 @@ export function SearchHeader({
   onTabChange,
   activeTab,
 }: SearchHeaderProps) {
-  const isDesktop = useMediaQuery("(min-width: 768px)");
-
   return (
     <div className="py-6 flex justify-between">
       <Tabs
@@ -42,39 +39,30 @@ export function SearchHeader({
             <DrawerDialog key="filters-button" breeds={breeds} />
           )}
         </AnimatePresence>
-        {isDesktop ? (
-          <motion.div
-            animate={{
-              width: selectedDogs.length > 0 ? 220 : 0,
-              opacity: selectedDogs.length > 0 ? 1 : 0,
-            }}
-            transition={{ duration: 0.2, ease: "easeOut" }}
-            style={{
-              overflow: "hidden",
-              whiteSpace: "nowrap",
-            }}
-          >
-            <Button
-              onClick={onNavigateToMatch}
-              disabled={selectedDogs.length === 0}
-              className="hidden sm:inline-flex w-full"
+        <AnimatePresence>
+          {selectedDogs.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0, width: 0 }}
+              animate={{ opacity: 1, width: 220 }}
+              exit={{ opacity: 0, width: 0 }}
+              transition={{ duration: 0.2, ease: "easeOut" }}
+              style={{
+                overflow: "hidden",
+                whiteSpace: "nowrap",
+              }}
+              className="hidden sm:block"
             >
-              <SearchIcon />
-              Find your pawfect match
-            </Button>
-          </motion.div>
-        ) : (
-          selectedDogs.length > 0 && (
-            <Button
-              onClick={onNavigateToMatch}
-              disabled={selectedDogs.length === 0}
-              className="hidden sm:inline-flex"
-            >
-              <SearchIcon />
-              Find your pawfect match
-            </Button>
-          )
-        )}
+              <Button
+                onClick={onNavigateToMatch}
+                disabled={selectedDogs.length === 0}
+                className="w-full"
+              >
+                <SearchIcon />
+                Find your pawfect match
+              </Button>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </div>
   );
