@@ -1,15 +1,13 @@
 import { Option } from "@/components/ui/multiple-selector";
 import { FILTERS_FORM_CONSTANTS } from "@/constants/constants";
-import { buildSearchParams, cn, getDefaultFormValues } from "@/lib/utils";
+import { buildSearchParams, cn } from "@/lib/utils";
 
 import { Form } from "@/components/ui/form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import * as React from "react";
-import { useForm } from "react-hook-form";
 
-import { FiltersFormData, FiltersFormSchema } from "@/schemas/filters";
+import { useFiltersForm } from "@/hooks/useFiltersForm";
+import { FiltersFormData } from "@/schemas/filters";
 import { useSearchDogs } from "@/services/dogService";
-import { useSearchParams } from "react-router";
 import {
   AgeRangeField,
   BreedsField,
@@ -28,15 +26,11 @@ export function FiltersForm({
   breedOptions,
   onClose,
 }: FiltersFormProps) {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const { form, onSubmit, handleReset } = useFiltersForm();
+
   const [resultsTotal, setResultsTotal] = React.useState<number>(
     FILTERS_FORM_CONSTANTS.DEFAULT_RESULTS_TOTAL
   );
-
-  const form = useForm<FiltersFormData>({
-    resolver: zodResolver(FiltersFormSchema),
-    defaultValues: getDefaultFormValues(searchParams),
-  });
 
   const formValues = form.watch();
 
@@ -57,23 +51,9 @@ export function FiltersForm({
     }
   }, [searchData?.total]);
 
-  function onSubmit(data: FiltersFormData) {
-    const params = buildSearchParams(data);
-    setSearchParams(params);
+  const handleFormSubmit = (data: FiltersFormData) => {
+    onSubmit(data);
     onClose();
-  }
-
-  const handleReset = () => {
-    const { DEFAULT_SORT, DEFAULT_AGE_MIN, DEFAULT_AGE_MAX } =
-      FILTERS_FORM_CONSTANTS;
-
-    form.reset({
-      sort: DEFAULT_SORT,
-      breeds: [],
-      ageRange: [DEFAULT_AGE_MIN, DEFAULT_AGE_MAX],
-      zipCodes: [],
-    });
-    setSearchParams(new URLSearchParams(`?sort=${DEFAULT_SORT}`));
   };
 
   return (
@@ -86,7 +66,10 @@ export function FiltersForm({
         </div>
       )}
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <form
+          onSubmit={form.handleSubmit(handleFormSubmit)}
+          className="space-y-8"
+        >
           <SortByField control={form.control} />
           <BreedsField control={form.control} breedOptions={breedOptions} />
           <AgeRangeField control={form.control} />
