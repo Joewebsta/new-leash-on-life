@@ -1,13 +1,12 @@
 import { Option } from "@/components/ui/multiple-selector";
-import { FILTERS_FORM_CONSTANTS } from "@/constants/constants";
-import { buildSearchParams, cn } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 
 import { Form } from "@/components/ui/form";
 import * as React from "react";
 
 import { useFiltersForm } from "@/hooks/useFiltersForm";
+import { useFiltersSearch } from "@/hooks/useFiltersSearch";
 import { FiltersFormData } from "@/schemas/filters";
-import { useSearchDogs } from "@/services/dogService";
 import {
   AgeRangeField,
   BreedsField,
@@ -27,29 +26,13 @@ export function FiltersForm({
   onClose,
 }: FiltersFormProps) {
   const { form, onSubmit, handleReset } = useFiltersForm();
-
-  const [resultsTotal, setResultsTotal] = React.useState<number>(
-    FILTERS_FORM_CONSTANTS.DEFAULT_RESULTS_TOTAL
-  );
-
   const formValues = form.watch();
 
-  const searchParamsString = React.useMemo(
-    () => buildSearchParams(formValues).toString(),
-    [formValues]
-  );
-
   const {
-    isPending: isLoadingSearchData,
+    isLoading: isLoadingSearchData,
     isError: isSearchError,
-    data: searchData,
-  } = useSearchDogs(searchParamsString);
-
-  React.useEffect(() => {
-    if (searchData?.total !== undefined) {
-      setResultsTotal(searchData.total);
-    }
-  }, [searchData?.total]);
+    resultsTotal,
+  } = useFiltersSearch(formValues);
 
   const handleFormSubmit = (data: FiltersFormData) => {
     onSubmit(data);
