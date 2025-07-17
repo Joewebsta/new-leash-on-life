@@ -1,11 +1,16 @@
 import { fetchBreeds, fetchDogs, identifyMatch, searchDogs } from "@/api/dogs";
 import { useQuery } from "@tanstack/react-query";
+import { FILTERS_FORM_CONSTANTS } from "@/constants/constants";
 
 export function useSearchDogs(searchParams?: string) {
+  const params =
+    searchParams?.trim() ||
+    `sort=${FILTERS_FORM_CONSTANTS.DEFAULT_SORT}&ageMin=${FILTERS_FORM_CONSTANTS.DEFAULT_AGE_MIN}&ageMax=${FILTERS_FORM_CONSTANTS.DEFAULT_AGE_MAX}`;
+
   return useQuery({
-    queryKey: ["dogs", "search", { searchParams }],
-    queryFn: () => searchDogs(searchParams),
-    enabled: !!searchParams?.trim(),
+    queryKey: ["dogs", "search", { searchParams: params }],
+    queryFn: () => searchDogs(params),
+    enabled: true,
   });
 }
 
