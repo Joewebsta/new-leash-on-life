@@ -14,8 +14,8 @@ export function useSearchPageData() {
   const breedsQuery = useFetchBreeds();
 
   return {
-    isLoading: searchQuery.isPending || dogsQuery.isPending,
-    isError: searchQuery.isError || dogsQuery.isError,
+    isLoading: searchQuery.isPending || dogsQuery.isPending || breedsQuery.isPending,
+    isError: searchQuery.isError || dogsQuery.isError || breedsQuery.isError,
     searchData: searchQuery.data,
     dogsData: dogsQuery.data,
     breedsData: breedsQuery.data,
