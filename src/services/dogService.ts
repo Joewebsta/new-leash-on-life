@@ -11,6 +11,13 @@ export function useSearchDogs(searchParams?: string) {
     queryKey: ["dogs", "search", { searchParams: params }],
     queryFn: () => searchDogs(params),
     enabled: true,
+    retry: 2,
+    retryDelay: 1000,
+    meta: {
+      onError: (error: Error) => {
+        console.error("Search dogs query failed:", error.message);
+      },
+    },
   });
 }
 
@@ -19,6 +26,13 @@ export function useFetchDogs(dogIds: string[]) {
     queryKey: ["dogs", "detail", { ids: dogIds }],
     queryFn: () => fetchDogs(dogIds),
     enabled: !!dogIds && dogIds.length > 0,
+    retry: 2,
+    retryDelay: 1000,
+    meta: {
+      onError: (error: Error) => {
+        console.error("Fetch dogs query failed:", error.message);
+      },
+    },
   });
 }
 
@@ -29,6 +43,13 @@ export function useFetchBreeds() {
     staleTime: 24 * 60 * 60 * 1000, // 24 hours - breeds rarely change
     gcTime: 48 * 60 * 60 * 1000, // Keep in cache for 48 hours
     refetchOnWindowFocus: false, // Breeds don't need real-time updates
+    retry: 2,
+    retryDelay: 1000,
+    meta: {
+      onError: (error: Error) => {
+        console.error("Fetch breeds query failed:", error.message);
+      },
+    },
   });
 }
 
